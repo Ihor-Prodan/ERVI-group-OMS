@@ -1,0 +1,10 @@
+.filters-container {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.filters-container .custom-dropdown-wrapper {
+  flex: 1 1 200px;
+}

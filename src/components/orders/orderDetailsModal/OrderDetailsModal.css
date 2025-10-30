@@ -1,0 +1,156 @@
+.details-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1rem;
+}
+
+.details-modal {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.details-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  transition: color 0.2s;
+}
+.details-close:hover {
+  color: #1e293b;
+}
+
+.details-title {
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  color: #1e293b;
+  text-align: center;
+  font-weight: 600;
+}
+
+.details-section-title {
+  font-size: 1.3rem;
+  margin-top: 1rem;
+  margin-bottom: 0.2rem;
+  color: #1e293b;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.3rem;
+}
+
+.details-section-subtitle {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #475569;
+  font-weight: 500;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 0.2rem 0.4rem;
+  align-items: center;
+}
+
+.details-row {
+  display: contents;
+}
+
+.details-label {
+  font-weight: 500;
+  color: #475569;
+  padding: 0.25rem 0;
+}
+
+.details-value {
+  color: #0f172a;
+  padding: 0.1rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: center;
+}
+
+.details-chip {
+  background-color: #f3f4f6;
+  padding: 0.3rem 0.6rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #0f172a;
+  transition: background 0.2s;
+}
+.details-chip:hover {
+  background-color: #e0e7ff;
+}
+
+.details-value .urgent {
+  color: #dc2626;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.details-actions {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.details-actions .btn.download {
+  background-color: #2563eb;
+  color: #fff;
+  padding: 0.7rem 1.4rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.1s;
+}
+.details-actions .btn.download:hover {
+  background-color: #1e40af;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+  .details-modal {
+    padding: 1rem;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+    gap: 0.25rem 0;
+  }
+
+  .details-label {
+    font-weight: 600;
+  }
+
+  .details-value {
+    gap: 0.4rem;
+  }
+
+  .details-chip {
+    font-size: 0.85rem;
+  }
+
+  .details-actions .btn.download {
+    width: 100%;
+    padding: 0.6rem;
+  }
+}

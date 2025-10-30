@@ -1,0 +1,110 @@
+.custom-dropdown-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem 0;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+}
+
+.custom-dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.custom-dropdown-label {
+  color: #4f5a70;
+  font-weight: 500;
+}
+
+.custom-dropdown-label.error {
+  color: #db2719;
+}
+
+.custom-dropdown-error {
+  color: #db2719;
+  font-size: 0.8rem;
+}
+
+.custom-dropdown-field {
+  padding: 0.4rem 0.75rem;
+  font-size: 1rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background: white;
+  color: #9ca3af;
+}
+
+.custom-dropdown-field:hover:not(.disabled) {
+  border-color: #3563e9;
+}
+
+.custom-dropdown-field.error {
+  border-color: #db2719;
+}
+
+.custom-dropdown-field.disabled {
+  background-color: #f3f4f6;
+  cursor: not-allowed;
+  color: #9ca3af;
+}
+
+.custom-dropdown-value.placeholder {
+  color: #9ca3af;
+}
+
+.custom-dropdown-icon {
+  transition: transform 200ms ease;
+  color: #4f5a70;
+}
+
+.custom-dropdown-icon.open {
+  transform: rotate(180deg);
+}
+
+.custom-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  background: white;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  list-style: none;
+  padding: 0.25rem 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+  color: #4f5a70;
+}
+
+.custom-dropdown-option {
+  padding: 0.6rem 0.75rem;
+  cursor: pointer;
+  transition: background 150ms ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.custom-dropdown-option:hover {
+  background: #f3f4f6;
+}
+
+.custom-dropdown-option.selected {
+  background: #e5edff;
+  font-weight: 500;
+}
+
+.custom-dropdown-check {
+  color: #3563e9;
+}

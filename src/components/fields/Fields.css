@@ -1,0 +1,79 @@
+.fields-section {
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+  height: 100%;
+}
+
+.fields-section h2 {
+  margin-bottom: 1.5rem;
+  color: #111827;
+}
+
+.fields-container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  flex-wrap: wrap;
+}
+
+.fields-description {
+  flex-basis: 100%;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  padding: 1.2rem;
+}
+
+.fields-forms {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+  min-width: 250px;
+}
+
+.fields-forms + .fields-forms {
+  border-left: 1px solid #e5e7eb;
+  padding-left: 2rem;
+}
+
+.fields-comment-section {
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.fields-forms-comment {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  resize: vertical;
+}
+
+.fields-gdpr-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.fields-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .fields-container {
+    flex-direction: column;
+  }
+  .fields-forms + .fields-forms {
+    border-left: none;
+    padding-left: 0;
+    margin-top: 2rem;
+  }
+}

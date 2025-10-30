@@ -1,0 +1,18 @@
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.no-orders {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #666;
+  background: #f9fafb;
+  border: 1px dashed #ddd;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+

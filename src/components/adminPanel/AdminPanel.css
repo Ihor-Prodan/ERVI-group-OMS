@@ -1,0 +1,13 @@
+.admin-panel {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  background: #f6f7f9;
+  position: relative;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+}
