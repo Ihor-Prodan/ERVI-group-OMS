@@ -19,27 +19,27 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ steps, setParcelNumber, setSteps 
   const { isAuthenticated } = useAuth();
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={isAuthenticated ? <Navigate to="/admin/new" replace /> : <Fields />}
-      />
-      <Route
-        path="/tracking"
-        element={
-          <TrackingTimeline steps={steps} setParcelNumber={setParcelNumber} setSteps={setSteps} />
-        }
-      />
-      <Route path="/ochrana-osobnych-udajov" element={<PrivacyPolicy />} />
+      <Routes>
+        <Route
+          path="/"
+          element={isAuthenticated ? <Navigate to="/admin/new" replace /> : <Fields />}
+        />
+        <Route
+          path="/tracking"
+          element={
+            <TrackingTimeline steps={steps} setParcelNumber={setParcelNumber} setSteps={setSteps} />
+          }
+        />
+        <Route path="/ochrana-osobnych-udajov" element={<PrivacyPolicy />} />
 
-      <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
-        <Route path="/admin" element={<AdminPanel />}>
-          <Route path="home" element={<Fields />} />
-          <Route path="new" element={<OrdersPage type="new" />} />
-          <Route path="old" element={<OrdersPage type="old" />} />
+        <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
+          <Route path="/admin" element={<AdminPanel />}>
+            <Route path="home" element={<Fields />} />
+            <Route path="new" element={<OrdersPage type="new" />} />
+            <Route path="old" element={<OrdersPage type="old" />} />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
   );
 };
 

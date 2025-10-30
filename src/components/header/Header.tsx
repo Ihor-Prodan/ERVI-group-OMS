@@ -9,6 +9,7 @@ import type { ParcelStep } from '../orders/types';
 import { useAuthStore } from '../../store/authStore';
 import useAuth from '../../hooks/useAuth';
 import Loader from '../../UI-elements/loader/Loader';
+import logo from '../../assets/LOGO.jpg';
 
 interface HeaderProps {
   onLoginClick: () => void;
@@ -85,7 +86,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="header">
-      <img className="header__logo" src="/src/assets/LOGO.jpg" alt="Logo" />
+      <img className="header__logo" src={logo} alt="Logo" />
 
       <div className="header__actions">
         <SearchInput

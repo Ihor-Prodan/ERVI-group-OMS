@@ -1,7 +1,7 @@
 'use strict';
 import { useState } from 'react';
 import './App.css';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { HashRouter as Router } from 'react-router-dom'; 
 import Footer from './components/footer/Footer';
 import Header from './components/header/Header';
 import AppRoutes from './components/router/Router';
