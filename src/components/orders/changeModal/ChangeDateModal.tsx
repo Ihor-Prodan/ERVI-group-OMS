@@ -4,6 +4,7 @@ import './ChangeDateModal.css';
 import CustomInput from '../../../UI-elements/input/Input';
 import Button from '../../../UI-elements/button/Buttot';
 import ConfirmModal from '../../comfirmModal/ComfirmModal';
+import dayjs from 'dayjs';
 
 interface ChangeDateModalProps {
   isOpen: boolean;
@@ -20,7 +21,7 @@ const ChangeDateModal: React.FC<ChangeDateModalProps> = ({ isOpen, onClose, onCo
   const handleConfirm = () => {
     if (!dateTime) {
       setErrorMessage('Vyberte dátum a čas odoslania.');
-      
+
       return;
     }
     const isoDate = new Date(dateTime).toISOString();
@@ -41,6 +42,7 @@ const ChangeDateModal: React.FC<ChangeDateModalProps> = ({ isOpen, onClose, onCo
           type="datetime-local"
           value={dateTime}
           onChange={(e) => setDateTime(e.target.value)}
+          min={dayjs().format('YYYY-MM-DDTHH:mm')}
         />
         <Button text="Potvrdiť" onClick={handleConfirm} className="modal-btn" />
       </div>

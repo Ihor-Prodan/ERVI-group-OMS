@@ -4,8 +4,8 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   // base: '/ERVI-group-OMS/',
-  // base: '/',
-  base: '/www.ervi-group.com/',
+  base: '/',
+  // base: '/www.ervi-group.com/',
   plugins: [react()],
   server: {
     proxy: {
