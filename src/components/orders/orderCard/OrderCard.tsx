@@ -170,9 +170,10 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
 
           await changeOrderStatus(order.id, 'cancelled', now);
           await refreshOrders();
+
         } catch (err) {
           console.error(err);
-          
+
           setConfirmData({
             message: 'Nepodarilo sa zrušiť objednávku',
             action: async () => {},

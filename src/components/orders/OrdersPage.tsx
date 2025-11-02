@@ -21,7 +21,6 @@ const OrdersPage: React.FC<{ type: 'new' | 'old' }> = ({ type }) => {
         setOrdersFromServer([]);
       }
 
-      console.log('Fetched orders:', respons);
     } catch (error) {
       console.error('Error fetching orders:', error);
     }

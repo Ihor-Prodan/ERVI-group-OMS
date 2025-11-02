@@ -65,7 +65,7 @@ const TrackingTimeline: React.FC<TrackingTimelineProps> = ({
       <ArrowLeft size={18} /> Späť na formulár
     </button>
     <h2 className="timeline-title">
-      Sledovanie zásielky #{steps.find((s) => s.parcelNumber)?.parcelNumber || 'Zadné číslo'}
+      Sledovanie zásielky #{steps.find((s) => s.parcelNumber)?.parcelNumber || 'Žiadne číslo'}
     </h2>
   </div>
 
