@@ -70,7 +70,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ onSubmit, onClose, loading }) =
             tabIndex={-1}
           />
 
-          <Button text="Prihlásiť sa" variant="primary" size="md" />
+          <Button text="Prihlásiť sa" variant="primary" size="md" disabled={loading} />
         </form>
       </div>
 

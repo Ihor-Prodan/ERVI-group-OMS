@@ -1,5 +1,5 @@
+const API_URL = "https://api.ervi-group.com/api";
 // const API_URL = "http://localhost:4000/api";
-const API_URL = "https:ervi-group-oms-server-production.up.railway.app";
 
 const handleResponse = async (res: Response) => {
   if (!res.ok) {

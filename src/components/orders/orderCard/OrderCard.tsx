@@ -93,7 +93,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
   const handleNextStatusClick = async () => {
     if (loading) {
       return;
-    };
+    }
 
     let nextStatus: OrderStatus | null = null;
     const now = new Date().toISOString();
@@ -114,7 +114,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
 
     if (!nextStatus) {
       return;
-    };
+    }
 
     if (nextStatus === 'delivered' || nextStatus === 'paid') {
       setConfirmData({
@@ -127,7 +127,6 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
           try {
             await changeOrderStatus(order.id, nextStatus, now);
             await refreshOrders();
-
           } catch (err) {
             console.error(err);
             alert('Nepodarilo sa zmeniť stav objednávky');
@@ -141,7 +140,6 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
       try {
         await changeOrderStatus(order.id, nextStatus, now);
         await refreshOrders();
-
       } catch (err) {
         console.error(err);
         alert('Nepodarilo sa zmeniť stav objednávky');
@@ -170,7 +168,6 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
 
           await changeOrderStatus(order.id, 'cancelled', now);
           await refreshOrders();
-
         } catch (err) {
           console.error(err);
 
@@ -256,7 +253,10 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
 
             <span
               className="order-card-status"
-              style={{ backgroundColor: statusMap[order.status].color }}
+              style={{
+                backgroundColor: statusMap[order.status].color,
+                color: statusMap[order.status].color === '#aef840ff' ? 'black' : 'white',
+              }}
             >
               {statusMap[order.status].label}
             </span>

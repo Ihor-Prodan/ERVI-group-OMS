@@ -20,7 +20,7 @@ export const companiesMap = [
     city: 'Holubice',
     country: 'Česká republika',
     phone: '+420543553111',
-    email: ''
+    email: 'info@miele.cz'
   },
   {
     id: '1',

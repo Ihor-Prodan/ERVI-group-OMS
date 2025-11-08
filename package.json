@@ -16,7 +16,9 @@
   },
   "dependencies": {
     "dayjs": "^1.11.18",
+    "docx": "^9.5.1",
     "lucide-react": "^0.544.0",
+    "pdf-lib": "^1.17.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.63.0",

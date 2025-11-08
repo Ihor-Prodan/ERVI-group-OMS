@@ -13,6 +13,7 @@ import { createOrder } from '../API/API';
 import { companiesMap, COMPANY_OPTIONS } from './companies';
 import type { FormValues } from '../orders/types';
 import { Link } from 'react-router-dom';
+import Loader from '../../UI-elements/loader/Loader';
 
 dayjs.extend(localizedFormat);
 dayjs.locale('sk');
@@ -23,6 +24,7 @@ export const Fields = () => {
     type: 'success' | 'error';
   } | null>(null);
   const [honeypot, setHoneypot] = useState('');
+  const [loader, setLoader] = useState(false);
 
   const defaultValues: FormValues = {
     productName: '',
@@ -56,6 +58,8 @@ export const Fields = () => {
   const pickupType = watch('pickupType');
 
   const onSubmit = async (data: FormValues) => {
+    setLoader(true);
+
     if (honeypot.trim() !== '') {
       console.warn('Bot submission detected — honeypot triggered.');
       return;
@@ -108,6 +112,8 @@ export const Fields = () => {
       reset(defaultValues);
     } catch (error) {
       setNotification({ message: 'Chyba pri odosielaní formulára.', type: 'error' });
+    } finally {
+      setLoader(false);
     }
   };
 
@@ -680,16 +686,20 @@ export const Fields = () => {
               variant="secondary"
               size="md"
               onClick={() => reset(defaultValues)}
+              disabled={loader}
             />
             <Button
               text="Odoslať objednávku"
               variant="primary"
               size="md"
               onClick={handleSubmit(onSubmit)}
+              disabled={loader}
             />
           </div>
         </div>
       )}
+
+      {loader && <Loader fullscreen={true} />}
     </section>
   );
 };
