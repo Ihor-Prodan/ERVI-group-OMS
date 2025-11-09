@@ -10,7 +10,7 @@ import 'dayjs/locale/sk';
 import { useState } from 'react';
 import Notification from '../notification/Notification';
 import { createOrder } from '../API/API';
-import { companiesMap, COMPANY_OPTIONS } from './companies';
+import { companiesMap, COMPANY_OPTIONS, COUNTRY_OPTIONS } from './companies';
 import type { FormValues } from '../orders/types';
 import { Link } from 'react-router-dom';
 import Loader from '../../UI-elements/loader/Loader';
@@ -287,18 +287,15 @@ export const Fields = () => {
 
               <Controller
                 name="country"
-                rules={{
-                  required: 'Toto pole je povinné',
-                  validate: (value) =>
-                    value.trim().length > 0 || 'Pole nemôže obsahovať iba medzery',
-                }}
                 control={control}
+                rules={{ required: 'Toto pole je povinné' }}
                 render={({ field, fieldState }) => (
-                  <CustomInput
+                  <CustomDropdown
                     label="Krajina"
-                    type="text"
-                    placeholder="Zadajte krajinu"
-                    {...field}
+                    placeholder="Vyberte krajinu"
+                    options={COUNTRY_OPTIONS}
+                    value={field.value}
+                    onChange={(value) => field.onChange(value)}
                     error={!!fieldState.error}
                     errorMessage={fieldState.error?.message}
                   />
@@ -309,6 +306,10 @@ export const Fields = () => {
                 name="email"
                 rules={{
                   required: 'Toto pole je povinné',
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: 'Zadajte platný email',
+                  },
                   validate: (value) =>
                     value.trim().length > 0 || 'Pole nemôže obsahovať iba medzery',
                 }}
@@ -560,17 +561,14 @@ export const Fields = () => {
               <Controller
                 name="receiverCountry"
                 control={control}
-                rules={{
-                  required: 'Toto pole je povinné',
-                  validate: (value) =>
-                    value.trim().length > 0 || 'Pole nemôže obsahovať iba medzery',
-                }}
+                rules={{ required: 'Toto pole je povinné' }}
                 render={({ field, fieldState }) => (
-                  <CustomInput
+                  <CustomDropdown
                     label="Krajina"
-                    placeholder="Zadajte krajinu"
-                    type="text"
-                    {...field}
+                    placeholder="Vyberte krajinu"
+                    options={COUNTRY_OPTIONS}
+                    value={field.value}
+                    onChange={(value) => field.onChange(value)}
                     error={!!fieldState.error}
                     errorMessage={fieldState.error?.message}
                   />
@@ -580,14 +578,20 @@ export const Fields = () => {
               <Controller
                 name="receiverEmail"
                 control={control}
-                rules={{ required: 'Toto pole je povinné' }}
+                rules={{
+                  required: 'Toto pole je povinné',
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: 'Zadajte platný email',
+                  },
+                }}
                 render={({ field, fieldState }) => (
                   <CustomInput
                     label="Kontaktný email"
                     placeholder="Zadajte kontaktný email"
+                    type="email"
                     {...field}
                     error={!!fieldState.error}
-                    type="email"
                     errorMessage={fieldState.error?.message}
                   />
                 )}

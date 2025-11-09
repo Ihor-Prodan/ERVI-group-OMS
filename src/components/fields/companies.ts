@@ -11,6 +11,11 @@ export const COMPANY_OPTIONS: CompanyOption[] = [
   { value: '6', label: 'Ine...' },
 ];
 
+export const COUNTRY_OPTIONS = [
+  { label: 'Slovenská republika', value: 'SK' },
+  { label: 'Česká republika', value: 'CZ' },
+];
+
 export const companiesMap = [
   {
     id: '5',

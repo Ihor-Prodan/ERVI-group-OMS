@@ -213,7 +213,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose })
             <Loader fullscreen={true} />
           ) : (
             <button className="btn download" onClick={handleDownloadDoc}>
-              Stiahnuť DOCX
+              Stiahnuť PDF
             </button>
           )}
         </div>
