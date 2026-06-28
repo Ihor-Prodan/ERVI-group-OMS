@@ -5,11 +5,14 @@ import {
   Building2,
   Eye,
   ArrowRight,
+  ArrowLeft,
   XCircle,
   Clock,
   PackageCheck,
   FileText,
   Package,
+  PhoneForwarded,
+  User,
 } from 'lucide-react';
 import './OrderCard.css';
 import ChangeDateModal from '../changeModal/ChangeDateModal';
@@ -18,7 +21,7 @@ import { changeOrderStatus, deleteOrder } from '../../API/API';
 import ConfirmModal from '../../comfirmModal/ComfirmModal';
 import { formatDate } from '../../../utils/dateUtils';
 import Loader from '../../../UI-elements/loader/Loader';
-import type { OrderDetails, OrderStatus } from '../types';
+import type { OrderDetails } from '../types';
 import { statusMap } from '../../../const/const';
 import { buttomName } from './const';
 
@@ -26,15 +29,23 @@ interface OrderCardProps {
   order: OrderDetails;
   onShowDetails: (id: string) => void;
   refreshOrders: () => Promise<void>;
+  setSelectedOrder?: React.Dispatch<React.SetStateAction<OrderDetails | null>>;
 }
 
-const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrders }) => {
+const OrderCard: React.FC<OrderCardProps> = ({
+  setSelectedOrder,
+  order,
+  onShowDetails,
+  refreshOrders,
+}) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [dateTargetStatus, setDateTargetStatus] = useState<'sent' | 'delivered' | null>(null);
   const [confirmData, setConfirmData] = useState<{
     message: string;
     action: () => Promise<void>;
   } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const companyName =
     COMPANY_OPTIONS.find((c) => c.value === order.company)?.label || order.company;
@@ -91,61 +102,41 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
   };
 
   const handleNextStatusClick = async () => {
-    if (loading) {
-      return;
-    }
+    if (loading) return;
 
-    let nextStatus: OrderStatus | null = null;
     const now = new Date().toISOString();
 
     switch (order.status) {
       case 'accepted':
+        setDateTargetStatus('sent');
         setModalOpen(true);
         return;
+
       case 'sent':
-        nextStatus = 'delivered';
-        break;
+        setDateTargetStatus('delivered');
+        setModalOpen(true);
+        return;
+
       case 'delivered':
-        nextStatus = 'paid';
-        break;
+        setConfirmData({
+          message: 'Naozaj chcete označiť objednávku ako zaplatenú?',
+          action: async () => {
+            try {
+              setLoading(true);
+              await changeOrderStatus(order.id, 'paid', now);
+              await refreshOrders();
+            } catch (err) {
+              console.error(err);
+              alert('Nepodarilo sa zmeniť stav objednávky');
+            } finally {
+              setLoading(false);
+            }
+          },
+        });
+        return;
+
       default:
-        nextStatus = null;
-    }
-
-    if (!nextStatus) {
-      return;
-    }
-
-    if (nextStatus === 'delivered' || nextStatus === 'paid') {
-      setConfirmData({
-        message:
-          nextStatus === 'delivered'
-            ? 'Naozaj chcete označiť objednávku ako doručenú?'
-            : 'Naozaj chcete označiť objednávku ako zaplatenú?',
-        action: async () => {
-          setLoading(true);
-          try {
-            await changeOrderStatus(order.id, nextStatus, now);
-            await refreshOrders();
-          } catch (err) {
-            console.error(err);
-            alert('Nepodarilo sa zmeniť stav objednávky');
-          } finally {
-            setLoading(false);
-          }
-        },
-      });
-    } else {
-      setLoading(true);
-      try {
-        await changeOrderStatus(order.id, nextStatus, now);
-        await refreshOrders();
-      } catch (err) {
-        console.error(err);
-        alert('Nepodarilo sa zmeniť stav objednávky');
-      } finally {
-        setLoading(false);
-      }
+        return;
     }
   };
 
@@ -168,6 +159,8 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
 
           await changeOrderStatus(order.id, 'cancelled', now);
           await refreshOrders();
+
+          setSelectedOrder?.(null);
         } catch (err) {
           console.error(err);
 
@@ -183,16 +176,18 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
   };
 
   const handleConfirmDate = async (date: string) => {
-    if (loading) return;
+    if (loading || !dateTargetStatus) return;
 
     setLoading(true);
     try {
       const isoDate = new Date(date).toISOString();
 
-      await changeOrderStatus(order.id, 'sent', isoDate);
+      await changeOrderStatus(order.id, dateTargetStatus, isoDate);
 
       setModalOpen(false);
-      refreshOrders();
+      setDateTargetStatus(null);
+      await refreshOrders();
+      setSelectedOrder?.(null);
     } catch (err) {
       console.error(err);
       alert('Nepodarilo sa nastaviť dátum odvozu');
@@ -205,9 +200,13 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
     setConfirmData({
       message: 'Naozaj chcete vymazať túto objednávku?',
       action: async () => {
+        setIsDeleting(true);
+        
         try {
           await deleteOrder(order.id);
           await refreshOrders();
+
+          setSelectedOrder?.(null);
 
           setConfirmData({
             message: 'Objednávka bola úspešne vymazaná',
@@ -220,6 +219,42 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
             message: err.message || 'Chyba pri vymazávaní objednávky',
             action: async () => {},
           });
+        } finally {
+          setIsDeleting(false);
+        }
+      },
+    });
+  };
+
+  const PREV_STATUS: Record<string, string> = {
+    sent: 'accepted',
+    delivered: 'sent',
+    paid: 'delivered',
+  };
+
+  const PREV_STATUS_LABEL: Record<string, string> = {
+    sent: 'Prijaté',
+    delivered: 'Odoslané',
+    paid: 'Doručené',
+  };
+
+  const handleRevertStatus = () => {
+    const prevStatus = PREV_STATUS[order.status];
+    if (!prevStatus) return;
+
+    setConfirmData({
+      message: `Naozaj chcete vrátiť objednávku späť na stav "${PREV_STATUS_LABEL[order.status]}"?`,
+      action: async () => {
+        setLoading(true);
+        try {
+          await changeOrderStatus(order.id, prevStatus as 'accepted' | 'sent' | 'paid' | 'cancelled' | 'delivered');
+          await refreshOrders();
+          setSelectedOrder?.(null);
+        } catch (err) {
+          console.error(err);
+          alert('Nepodarilo sa vrátiť stav objednávky');
+        } finally {
+          setLoading(false);
         }
       },
     });
@@ -231,6 +266,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
     }
 
     try {
+      setDateTargetStatus('sent');
       setModalOpen(true);
     } catch (err) {
       console.error(err);
@@ -263,7 +299,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
           </div>
 
           <div className="order-card-body">
-            <p>
+            <p style={{ fontWeight: 'bold' }}>
               <FileText size={16} /> Číslo objednávky: #{order.deliveryNumber}
             </p>
             <p>
@@ -278,12 +314,24 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
             <p>
               <MapPin size={16} color="red" className="icon" /> Do: {order.to}
             </p>
+            <p style={{ fontWeight: 'bold' }}>
+              <User size={16} className="icon" /> Príjemca: {order.fullname}
+            </p>
+            <p style={{ fontWeight: 'bold' }}>
+              <PhoneForwarded size={16} className="icon" /> Tel.: {order.receiverPhone}
+            </p>
           </div>
 
           <div className="order-card-actions">
             <button className="btn details" onClick={() => onShowDetails(order.id)}>
               <Eye size={16} /> Detaily
             </button>
+
+            {PREV_STATUS[order.status] && order.status !== 'cancelled' && (
+              <button className="btn revert" onClick={handleRevertStatus}>
+                <ArrowLeft size={16} /> {PREV_STATUS_LABEL[order.status]}
+              </button>
+            )}
 
             {order.status === 'sent' && (
               <button
@@ -342,10 +390,12 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onShowDetails, refreshOrde
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
         onConfirm={handleConfirmDate}
+        title={dateTargetStatus === 'sent' ? 'Vyberte dátum odoslania' : 'Vyberte dátum doručenia'}
       />
 
       {confirmData && (
         <ConfirmModal
+          isDeleting={isDeleting}
           isOpen={!!confirmData}
           title="Potvrdenie"
           message={confirmData.message}

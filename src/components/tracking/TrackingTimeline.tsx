@@ -42,6 +42,8 @@ const TrackingTimeline: React.FC<TrackingTimelineProps> = ({
 
         setSteps(transformOrderToSteps(order));
         setParcelNumber(number);
+
+        console.log(transformOrderToSteps(order));
       } catch (err) {
         console.error('Chyba pri načítaní objednávky:', err);
       } finally {
@@ -58,6 +60,8 @@ const TrackingTimeline: React.FC<TrackingTimelineProps> = ({
     navigate('/');
   };
 
+  console.log(steps);
+
   return (
     <div className="timeline-container">
   <div className="timeline-header">
@@ -65,7 +69,7 @@ const TrackingTimeline: React.FC<TrackingTimelineProps> = ({
       <ArrowLeft size={18} /> Späť na formulár
     </button>
     <h2 className="timeline-title">
-      Sledovanie zásielky #{steps.find((s) => s.parcelNumber)?.parcelNumber || 'Žiadne číslo'}
+      Sledovanie zásielky číslo DL #{steps.find((s) => s.parcelNumber)?.parcelNumber || 'Žiadne číslo'}
     </h2>
   </div>
 

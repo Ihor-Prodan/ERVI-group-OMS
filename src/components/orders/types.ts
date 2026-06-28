@@ -33,6 +33,7 @@ export type OrderDetails = {
   gdpr: boolean;
   products: string[];
   weight: string;
+  route?: string;
   pickupType: 'date' | 'asap';
   pickupDate?: string | null;
   fullname: string;

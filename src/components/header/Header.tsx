@@ -64,12 +64,21 @@ const Header: React.FC<HeaderProps> = ({
       return;
     }
 
-    if (!Number(parcelNumber) && isNaN(Number(parcelNumber))) {
-      alert('Musíte zadať platné číslo objednávky.');
-      setLoading(false);
+    const validNumberRegex = /^(?! )(?!.* $)[0-9 ]+$/;
 
+    if (!validNumberRegex.test(parcelNumber)) {
+      alert('Musíte zadať platné číslo objednávky.');
+
+      setLoading(false);
       return;
     }
+
+    // if (!Number(parcelNumber) && isNaN(Number(parcelNumber))) {
+    //   alert('Musíte zadať platné číslo objednávky.');
+    //   setLoading(false);
+
+    //   return;
+    // }
 
     try {
       const order = await getOrderByTrackingNumber(parcelNumber);
@@ -77,8 +86,10 @@ const Header: React.FC<HeaderProps> = ({
 
       navigate(`/tracking?number=${parcelNumber}`);
       setParcelNumber('');
-    } catch (err) {
+    } catch (err: any) {
       console.error('Chyba pri načítaní objednávky:', err);
+
+      alert(err.message || 'Chyba pri načítaní objednávky.');
     } finally {
       setLoading(false);
     }
@@ -90,7 +101,7 @@ const Header: React.FC<HeaderProps> = ({
 
       <div className="header__actions">
         <SearchInput
-          placeholder="Zadajte číslo objednávky..."
+          placeholder="Zadajte číslo DL..."
           onSearch={onSearch}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setParcelNumber(e.target.value)}
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {

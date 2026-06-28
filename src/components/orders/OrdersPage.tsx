@@ -5,22 +5,21 @@ import { getOrders } from '../API/API';
 import type { FilterOptions, OrderDetails } from './types';
 import OrderFilters from './orderFilters/Filters';
 import { filterOrders } from './orderFilters/orderFilters';
+import CalendarModal from './ordersCalendar/CalendarModal';
 
-const OrdersPage: React.FC<{ type: 'new' | 'old' }> = ({ type }) => {
+interface Props {
+  type: 'new' | 'sent' | 'accepted' | 'cancelled' | 'delivered' | 'paid';
+}
+
+const OrdersPage: React.FC<Props> = ({ type }) => {
   const [selectedOrder, setSelectedOrder] = useState<OrderDetails | null>(null);
   const [ordersFromServer, setOrdersFromServer] = useState<OrderDetails[]>([]);
   const [filters, setFilters] = useState<FilterOptions>({});
 
   const fetchOrders = async () => {
     try {
-      const respons = await getOrders();
-
-      if (respons) {
-        setOrdersFromServer(respons);
-      } else {
-        setOrdersFromServer([]);
-      }
-
+      const response = await getOrders();
+      setOrdersFromServer(response || []);
     } catch (error) {
       console.error('Error fetching orders:', error);
     }
@@ -30,33 +29,59 @@ const OrdersPage: React.FC<{ type: 'new' | 'old' }> = ({ type }) => {
     fetchOrders();
   }, []);
 
-  const filteredOrders = filterOrders(
-    ordersFromServer.filter((o) => {
-      const { accepted, sent, cancelled, paid } = o.statusDates;
+  const statusFiltered = ordersFromServer.filter((o) => {
+    const s = o.statusDates || {};
 
-      if (type === 'new') {
-        return accepted && !sent && !cancelled && !paid;
-      } else {
-        return !!(sent || cancelled || paid);
-      }
-    }),
-    filters
-  );
+    switch (type) {
+      case 'sent':
+        return !!s.sent && !s.delivered && !s.cancelled;
+      case 'accepted':
+        return !!s.accepted && !s.sent && !s.delivered && !s.cancelled;
+      case 'delivered':
+        return !!s.delivered && !s.paid;
+      case 'paid':
+        return !!s.paid;
+      case 'cancelled':
+        return !!s.cancelled;
+      default:
+        return false;
+    }
+  });
+
+  const filteredOrders = filterOrders(statusFiltered, filters);
 
   const handleShowDetails = (id: string) => {
-    const found = filteredOrders.find((o) => o.id === id);
+    const found = ordersFromServer.find((o) => o.id === id);
     if (found) setSelectedOrder(found);
   };
 
   return (
     <div>
-      <h2>{type === 'new' ? 'Nové objednávky' : 'Staré objednávky'}</h2>
+      <h2>
+        {
+          {
+            new: 'Nové objednávky',
+            sent: 'Odoslané objednávky',
+            accepted: 'Akceptované objednávky',
+            delivered: 'Doručené objednávky',
+            cancelled: 'Zrušené objednávky',
+            paid: 'Zaplatené objednávky',
+          }[type]
+        }
+      </h2>
+
       <OrderFilters orders={ordersFromServer} onFilterChange={(filters) => setFilters(filters)} />
+      <CalendarModal
+        onShowDetails={handleShowDetails}
+        ordersFromServer={ordersFromServer}
+        refreshOrders={fetchOrders}
+      />
       <OrdersList
         orders={filteredOrders}
         onShowDetails={handleShowDetails}
         refreshOrders={fetchOrders}
       />
+
       {selectedOrder && (
         <OrderDetailsModal order={selectedOrder} onClose={() => setSelectedOrder(null)} />
       )}

@@ -44,7 +44,7 @@ const LoginHandler: React.FC<LoginHandlerProps> = ({ onClose }) => {
       if (res?.ok && res.user) {
         setUser(res.user);
         onClose();
-        navigate('/admin/new');
+        navigate('/admin/accepted');
       } else {
         alert('Chyba prihlásenia, skúste znova.');
       }

@@ -9,14 +9,17 @@ import localizedFormat from 'dayjs/plugin/localizedFormat';
 import 'dayjs/locale/sk';
 import { useState } from 'react';
 import Notification from '../notification/Notification';
-import { createOrder } from '../API/API';
+import { createOrder, fetchAvailableSlots } from '../API/API';
 import { companiesMap, COMPANY_OPTIONS, COUNTRY_OPTIONS } from './companies';
 import type { FormValues } from '../orders/types';
 import { Link } from 'react-router-dom';
 import Loader from '../../UI-elements/loader/Loader';
+import { SlotModal } from './slotModal/SlotModal';
 
 dayjs.extend(localizedFormat);
 dayjs.locale('sk');
+
+type Slot = { from: number; to: number };
 
 export const Fields = () => {
   const [notification, setNotification] = useState<{
@@ -25,6 +28,10 @@ export const Fields = () => {
   } | null>(null);
   const [honeypot, setHoneypot] = useState('');
   const [loader, setLoader] = useState(false);
+  const [slotModalOpen, setSlotModalOpen] = useState(false);
+  const [availableSlots, setAvailableSlots] = useState<{ from: number; to: number }[]>([]);
+  const [selectedSlotDate, setSelectedSlotDate] = useState<Date | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
 
   const defaultValues: FormValues = {
     productName: '',
@@ -56,6 +63,8 @@ export const Fields = () => {
   });
 
   const pickupType = watch('pickupType');
+  const selectedCompany = watch('company');
+  const isMiele = selectedCompany === '5';
 
   const onSubmit = async (data: FormValues) => {
     setLoader(true);
@@ -106,12 +115,21 @@ export const Fields = () => {
         to: `${data.receiverStreet}, ${data.receiverCity} ${data.receiverPsc}, ${data.receiverCountry}`,
       };
 
-      await createOrder(payload);
+      const res = await createOrder(payload);
 
-      setNotification({ message: 'Formulár bol úspešne odoslaný!', type: 'success' });
+      console.log('Order creation response:', res.message);
+
+      setNotification({
+        message: res.message || 'Formulár bol úspešne odoslaný!',
+        type: 'success',
+      });
       reset(defaultValues);
-    } catch (error) {
-      setNotification({ message: 'Chyba pri odosielaní formulára.', type: 'error' });
+    } catch (error: any) {
+      console.log('Error during form submission:', error);
+      setNotification({
+        message: error.message || 'Chyba pri odosielaní formulára.',
+        type: 'error',
+      });
     } finally {
       setLoader(false);
     }
@@ -373,13 +391,16 @@ export const Fields = () => {
                   control={control}
                   render={({ field }) => (
                     <>
-                      <CustomCheckbox
-                        label="Čo najskôr"
-                        checked={field.value === 'asap'}
-                        onChange={() => field.onChange('asap')}
-                        error={false}
-                        errorMessage="Musíte súhlasiť"
-                      />
+                      {!isMiele && (
+                        <CustomCheckbox
+                          label="Čo najskôr"
+                          checked={field.value === 'asap'}
+                          onChange={() => field.onChange('asap')}
+                          error={false}
+                          errorMessage="Musíte súhlasiť"
+                        />
+                      )}
+
                       <CustomCheckbox
                         label="V konkrétny deň"
                         checked={field.value === 'date'}
@@ -393,23 +414,131 @@ export const Fields = () => {
               </div>
 
               {pickupType === 'date' && (
+                // <Controller
+                //   name="pickupDate"
+                //   control={control}
+                //   rules={{
+                //     validate: (value) => {
+                //       if (!value) return 'Musíte vybrať dátum a čas';
+
+                //       const day = dayjs(value).day();
+
+                //       if (isMiele && !(day === 4 || day === 5)) {
+                //         return 'Je možné zvoliť si termín iba vo štvrtok alebo v piatok.';
+                //       }
+
+                //       return true;
+                //     },
+                //   }}
+                //   render={({ field, fieldState }) => (
+                //     <CustomInput
+                //       label="Ak ste vybrali v konkrétny deň, vyberte dátum a čas"
+                //       type="datetime-local"
+                //       value={field.value ? dayjs(field.value).format('YYYY-MM-DDTHH:mm') : ''}
+                //       onChange={(e) => {
+                //         const val = e.target.value;
+
+                //         if (isMiele) {
+                //           const day = dayjs(val).day();
+
+                //           if (day !== 4 && day !== 5) {
+                //             field.onChange('');
+                //             return setNotification({
+                //               type: 'error',
+                //               message: 'Je možné zvoliť si termín iba vo štvrtok alebo v piatok.',
+                //             });
+                //           }
+                //         }
+
+                //         field.onChange(val);
+                //       }}
+                //       placeholder="Vyberte dátum a čas"
+                //       error={!!fieldState.error}
+                //       errorMessage={fieldState.error?.message}
+                //       min={dayjs().format('YYYY-MM-DDTHH:mm')}
+                //     />
+                //   )}
+                // />
                 <Controller
                   name="pickupDate"
                   control={control}
                   rules={{
-                    validate: (value) => (value ? true : 'Musíte vybrať dátum a čas'),
+                    validate: (value) => {
+                      if (!value) return 'Musíte vybrať dátum a čas';
+
+                      const day = dayjs(value).day();
+                      if (isMiele && !(day === 3 || day === 4)) {
+                        return 'Je možné zvoliť si termín iba v stredu alebo vo štvrtok.';
+                      }
+
+                      return true;
+                    },
                   }}
                   render={({ field, fieldState }) => (
-                    <CustomInput
-                      label="Ak ste vybrali v konkrétny deň, vyberte dátum a čas"
-                      type="datetime-local"
-                      value={field.value ? dayjs(field.value).format('YYYY-MM-DDTHH:mm') : ''}
-                      onChange={(e) => field.onChange(e.target.value)}
-                      placeholder="Vyberte dátum a čas"
-                      error={!!fieldState.error}
-                      errorMessage={fieldState.error?.message}
-                      min={dayjs().format('YYYY-MM-DDTHH:mm')}
-                    />
+                    <>
+                      <CustomInput
+                        label={
+                          isMiele ? 'Vyberte dátum (streda alebo štvrtok)' : 'Vyberte dátum a čas'
+                        }
+                        type={isMiele ? 'date' : 'datetime-local'} // для інших компаній одразу дата+час
+                        value={
+                          field.value
+                            ? dayjs(field.value).format(isMiele ? 'YYYY-MM-DD' : 'YYYY-MM-DDTHH:mm')
+                            : ''
+                        }
+                        onChange={async (e) => {
+                          const val = e.target.value;
+                          const day = dayjs(val).day();
+
+                          if (isMiele) {
+                            if (day !== 3 && day !== 4) {
+                              field.onChange('');
+                              return setNotification({
+                                type: 'error',
+                                message: 'Je možné zvoliť si termín iba v stredu alebo vo štvrtok.',
+                              });
+                            }
+
+                            try {
+                              const data = await fetchAvailableSlots(selectedCompany, val);
+                              setAvailableSlots(data.availableSlots);
+                              setSelectedSlotDate(new Date(val));
+                              setSlotModalOpen(true);
+                            } catch (err: any) {
+                              setNotification({ type: 'error', message: err.message });
+                            }
+                          } else {
+                            field.onChange(val);
+                          }
+                        }}
+                        placeholder={isMiele ? 'Vyberte dátum' : 'Vyberte dátum a čas'}
+                        error={!!fieldState.error}
+                        errorMessage={fieldState.error?.message}
+                        min={dayjs().format(isMiele ? 'YYYY-MM-DD' : 'YYYY-MM-DDTHH:mm')}
+                      />
+
+                      {isMiele && selectedSlot && (
+                        <p style={{ color: 'green', margin: 0 }}>
+                          Vybrané časové pásmo:{' '}
+                          <strong>
+                            {selectedSlot.from}:00 – {selectedSlot.to}:00
+                          </strong>
+                        </p>
+                      )}
+
+                      {isMiele && slotModalOpen && selectedSlotDate && (
+                        <SlotModal
+                          date={selectedSlotDate}
+                          slots={availableSlots}
+                          onSelect={(slotDateTime, slot) => {
+                            setSelectedSlot(slot); // ← зберігаємо вибраний слот
+                            field.onChange(slotDateTime); // ← пишемо час у форму
+                            setSlotModalOpen(false);
+                          }}
+                          onClose={() => setSlotModalOpen(false)}
+                        />
+                      )}
+                    </>
                   )}
                 />
               )}

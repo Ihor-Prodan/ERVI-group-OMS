@@ -91,3 +91,11 @@
   pointer-events: none;
 }
 
+@media (max-width: 600px) {
+  .search-input {
+    width: auto;
+    flex: 1;
+    min-width: 0;
+  }
+}
+

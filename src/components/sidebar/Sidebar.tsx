@@ -1,6 +1,13 @@
 import React, { useState } from 'react';
-import { PackagePlus, PackageCheck, LayoutList } from 'lucide-react';
-import './Sidebar.css';
+import {
+  PackagePlus,
+  PackageCheck,
+  Package,
+  PackageX,
+  LayoutList,
+  CreditCard,
+  FileText
+} from 'lucide-react';import './Sidebar.css';
 import Button from '../../UI-elements/button/Buttot';
 import { changePassword } from '../API/API';
 
@@ -22,11 +29,16 @@ const Sidebar: React.FC<SidebarProps> = ({ active, onChange, className }) => {
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const items = [
-    { id: 'new', label: 'Nové objednávky', icon: <PackagePlus size={18} /> },
-    { id: 'old', label: 'Staré objednávky', icon: <PackageCheck size={18} /> },
-    { id: 'home', label: 'Formulár', icon: <LayoutList size={18} /> },
-  ];
+
+const items = [
+  { id: 'accepted', label: 'Nové', icon: <PackagePlus size={18} /> },
+  { id: 'sent', label: 'Odoslané', icon: <PackageCheck size={18} /> },
+  { id: 'delivered', label: 'Doručené', icon: <Package size={18} /> },
+  { id: 'paid', label: 'Zaplatené', icon: <CreditCard size={18} /> },
+  { id: 'cancelled', label: 'Zrušené', icon: <PackageX size={18} /> },
+  { id: 'documents', label: 'Dokumenty', icon: <FileText size={18} /> },
+  { id: 'home', label: 'Formulár', icon: <LayoutList size={18} /> },
+];
 
   const handlePasswordChange = async () => {
     if (newPassword !== confirmPassword) {

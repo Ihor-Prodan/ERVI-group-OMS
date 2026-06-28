@@ -1,0 +1,76 @@
+.slot-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.slot-modal-container {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  width: 320px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.slot-modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.slot-modal-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+}
+
+.slot-modal-item {
+  margin-bottom: 0.5rem;
+}
+
+.slot-modal-button {
+  width: 100%;
+  padding: 0.5rem 0;
+  background-color: #3b82f6;
+  color: #fff;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.slot-modal-button:hover {
+  background-color: #2563eb;
+}
+
+.slot-modal-close {
+  width: 100%;
+  padding: 0.5rem 0;
+  background-color: #e5e7eb;
+  color: #111827;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.slot-modal-no-slots {
+  text-align: center;
+  color: #f01919; 
+  margin-bottom: 1rem;
+}
+
+.slot-modal-close:hover {
+  background-color: #d1d5db;
+}

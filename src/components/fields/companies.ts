@@ -23,7 +23,7 @@ export const companiesMap = [
     adress: 'Holubice 563',
     psc: '68351',
     city: 'Holubice',
-    country: 'Česká republika',
+    country: 'CZ',
     phone: '+420543553111',
     email: 'info@miele.cz'
   },
@@ -33,7 +33,7 @@ export const companiesMap = [
     adress: 'Dialničná cesta 10C',
     psc: '90301',
     city: 'Senec',
-    country: 'Slovenska republika',
+    country: 'SK',
     phone: '+421905446819',
     email: 'info@miele.sk'
   },
@@ -43,7 +43,7 @@ export const companiesMap = [
     adress: 'Dialničná cesta 10C',
     psc: '90301',
     city: 'Senec',
-    country: 'Slovenska republika',
+    country: 'SK',
     phone: '+421911503999',
     email: 'info@em-shop.sk'
   },
@@ -53,7 +53,7 @@ export const companiesMap = [
     adress: 'Kopčianska 92',
     psc: '85101',
     city: 'Bratislava',
-    country: 'Slovenska republika',
+    country: 'SK',
     phone: '+421918913352',
     email: 'attila.forgon@pottenpannen.sk'
   },

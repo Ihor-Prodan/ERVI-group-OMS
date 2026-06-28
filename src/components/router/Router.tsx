@@ -8,6 +8,7 @@ import TrackingTimeline from '../tracking/TrackingTimeline';
 import ProtectedRoute from './ProtectedRoute';
 import useAuth from '../../hooks/useAuth';
 import PrivacyPolicy from '../privacypolicy/PrivacyPolicy';
+import DocumentsPage from '../documentsPage/DocumentsPage';
 
 interface AppRoutesProps {
   steps: ParcelStep[];
@@ -19,27 +20,31 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ steps, setParcelNumber, setSteps 
   const { isAuthenticated } = useAuth();
 
   return (
-      <Routes>
-        <Route
-          path="/"
-          element={isAuthenticated ? <Navigate to="/admin/new" replace /> : <Fields />}
-        />
-        <Route
-          path="/tracking"
-          element={
-            <TrackingTimeline steps={steps} setParcelNumber={setParcelNumber} setSteps={setSteps} />
-          }
-        />
-        <Route path="/ochrana-osobnych-udajov" element={<PrivacyPolicy />} />
+    <Routes>
+      <Route
+        path="/"
+        element={isAuthenticated ? <Navigate to="/admin/accepted" replace /> : <Fields />}
+      />
+      <Route
+        path="/tracking"
+        element={
+          <TrackingTimeline steps={steps} setParcelNumber={setParcelNumber} setSteps={setSteps} />
+        }
+      />
+      <Route path="/ochrana-osobnych-udajov" element={<PrivacyPolicy />} />
 
-        <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
-          <Route path="/admin" element={<AdminPanel />}>
-            <Route path="home" element={<Fields />} />
-            <Route path="new" element={<OrdersPage type="new" />} />
-            <Route path="old" element={<OrdersPage type="old" />} />
-          </Route>
+      <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
+        <Route path="/admin" element={<AdminPanel />}>
+          <Route path="home" element={<Fields />} />
+          <Route path="accepted" element={<OrdersPage type="accepted" />} />
+          <Route path="sent" element={<OrdersPage type="sent" />} />
+          <Route path="delivered" element={<OrdersPage type="delivered" />} />
+          <Route path="paid" element={<OrdersPage type="paid" />} />
+          <Route path="cancelled" element={<OrdersPage type="cancelled" />} />
+          <Route path="documents" element={<DocumentsPage />} />
         </Route>
-      </Routes>
+      </Route>
+    </Routes>
   );
 };
 

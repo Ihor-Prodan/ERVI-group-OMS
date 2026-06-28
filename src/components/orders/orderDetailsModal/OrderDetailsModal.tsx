@@ -154,6 +154,10 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose })
             <div className="details-value">{order.weight} kg</div>
           </div>
           <div className="details-row">
+            <div className="details-label">Trasa</div>
+            <div className="details-value">{order.route}</div>
+          </div>
+          <div className="details-row">
             <div className="details-label">Vyzdvihnutie</div>
             <div className="details-value">
               {order.pickupType === 'asap' ? (
@@ -204,6 +208,12 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose })
             <div className="details-row">
               <div className="details-label">Email príjemcu</div>
               <div className="details-value">{order.receiverEmail}</div>
+            </div>
+          )}
+          {order.receiverPhone && (
+            <div className="details-row">
+              <div className="details-label">Tel. príjemcu</div>
+              <div className="details-value">{order.receiverPhone}</div>
             </div>
           )}
         </div>

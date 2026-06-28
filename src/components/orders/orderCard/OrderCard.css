@@ -27,6 +27,10 @@
   font-size: 0.8rem;
   padding: 0.25rem 0.6rem;
   border-radius: 6px;
+  max-height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .order-card-body p {
@@ -100,6 +104,14 @@
 }
 .btn.cancel:hover {
   background: #fecaca;
+}
+
+.btn.revert {
+  background: #f1f5f9;
+  color: #475569;
+}
+.btn.revert:hover {
+  background: #e2e8f0;
 }
 
 .icon {

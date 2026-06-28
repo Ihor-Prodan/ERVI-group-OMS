@@ -1,5 +1,5 @@
-const API_URL = "https://api.ervi-group.com/api";
-// const API_URL = "http://localhost:4000/api";
+// const API_URL = "https://api.ervi-group.com/api";
+const API_URL = "http://localhost:4000/api";
 
 const handleResponse = async (res: Response) => {
   if (!res.ok) {
@@ -10,8 +10,21 @@ const handleResponse = async (res: Response) => {
   return res.json();
 };
 
+const getCsrfToken = (): string | null => {
+  const match = document.cookie.match(/(?:^|; )csrfToken=([^;]*)/);
+  return match ? decodeURIComponent(match[1]) : null;
+};
+
 const fetchWithRefresh = async (input: string, init?: RequestInit, retry = true): Promise<any> => {
-  const res = await fetch(`${API_URL}${input}`, { ...init, credentials: "include" });
+  const method = (init?.method || "GET").toUpperCase();
+  const headers = new Headers(init?.headers);
+
+  if (method !== "GET" && method !== "HEAD") {
+    const csrfToken = getCsrfToken();
+    if (csrfToken) headers.set("X-CSRF-Token", csrfToken);
+  }
+
+  const res = await fetch(`${API_URL}${input}`, { ...init, headers, credentials: "include" });
 
   if (res.status === 401 && retry) {
 
@@ -84,8 +97,8 @@ export const getOrders = async () => fetchWithRefresh("/orders", { method: "GET"
 
 export const changeOrderStatus = async (
   id: string,
-  status: "sent" | "paid" | "cancelled" | "delivered",
-  date?: string
+  status: "accepted" | "sent" | "paid" | "cancelled" | "delivered",
+  date?: string | null
 ) => {
   return fetchWithRefresh(`/orders/${id}/status`, {
     method: "PUT",
@@ -117,4 +130,61 @@ export const changePassword = async (oldPassword: string, newPassword: string) =
 export const logout = async () => {
   return fetchWithRefresh("/auth/logout", { method: "POST" });
 };
+
+export const fetchAvailableSlots = async (company: string, date: string) => {
+  const url = `${API_URL}/orders/timeslots?company=${company}&date=${date}`;
+
+  const res = await fetch(url, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  return handleResponse(res);
+};
+
+// ─── Documents ────────────────────────────────────────────────────────────────
+
+export const getDocuments = async () =>
+  fetchWithRefresh("/documents", { method: "GET" });
+
+export const uploadDocumentFile = async (file: File): Promise<{
+  fileUrl: string;
+  fileName: string;
+  fileSize: string;
+  fileType: string;
+}> => {
+  const body = new FormData();
+  body.append("file", file);
+  // no Content-Type header — browser sets it automatically with boundary for multipart
+  return fetchWithRefresh("/documents/upload", { method: "POST", body });
+};
+
+export const createDocument = async (data: {
+  name: string;
+  fileUrl: string;
+  fileName: string;
+  fileSize?: string;
+  fileType?: string;
+  sumWithDph: number;
+  sumWithoutDph: number;
+  date: string;
+  dueDate?: string;
+  isPaid?: boolean;
+  note?: string;
+}) =>
+  fetchWithRefresh("/documents", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+export const deleteDocument = async (id: string) =>
+  fetchWithRefresh(`/documents/${id}`, { method: "DELETE" });
+
+export const toggleDocumentPaid = async (id: string, isPaid: boolean) =>
+  fetchWithRefresh(`/documents/${id}/paid`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ isPaid }),
+  });
 

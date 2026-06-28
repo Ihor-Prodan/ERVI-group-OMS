@@ -10,9 +10,10 @@ interface ChangeDateModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (date: string) => void;
+  title: string;
 }
 
-const ChangeDateModal: React.FC<ChangeDateModalProps> = ({ isOpen, onClose, onConfirm }) => {
+const ChangeDateModal: React.FC<ChangeDateModalProps> = ({title, isOpen, onClose, onConfirm }) => {
   const [dateTime, setDateTime] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -36,9 +37,9 @@ const ChangeDateModal: React.FC<ChangeDateModalProps> = ({ isOpen, onClose, onCo
         <button className="modal-close" onClick={onClose}>
           <X size={20} />
         </button>
-        <h2 className="modal-title">Vyberte dátum odoslania</h2>
+        <h2 className="modal-title">{title}</h2>
         <CustomInput
-          label="Dátum odoslania"
+          label="Dátum a čas"
           type="datetime-local"
           value={dateTime}
           onChange={(e) => setDateTime(e.target.value)}

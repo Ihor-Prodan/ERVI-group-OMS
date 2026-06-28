@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import './Filters.css';
 import CustomDropdown from '../../../UI-elements/dropdown/Dropdown';
 import type { FilterOptions, OrderDetails } from '../types';
-import { statusMap } from '../../../const/const';
+// import { statusMap } from '../../../const/const';
 
 interface OrderFiltersProps {
   orders: OrderDetails[];
@@ -21,15 +21,15 @@ const OrderFilters: React.FC<OrderFiltersProps> = ({ orders, onFilterChange }) =
     ];
   }, [orders]);
 
-  const statusOptions = useMemo(() => {
-    return [
-      { value: '', label: 'Všetky stavy' },
-      ...Object.entries(statusMap).map(([key, val]) => ({
-        value: key,
-        label: val.label,
-      })),
-    ];
-  }, []);
+  // const statusOptions = useMemo(() => {
+  //   return [
+  //     { value: '', label: 'Všetky stavy' },
+  //     ...Object.entries(statusMap).map(([key, val]) => ({
+  //       value: key,
+  //       label: val.label,
+  //     })),
+  //   ];
+  // }, []);
 
   const dateOptions = useMemo(() => {
     const uniqueMonths = Array.from(
@@ -65,12 +65,12 @@ const OrderFilters: React.FC<OrderFiltersProps> = ({ orders, onFilterChange }) =
         onChange={(v) => handleChange('country', v)}
       />
 
-      <CustomDropdown
+      {/* <CustomDropdown
         label="Stav objednávky"
         options={statusOptions}
         value={filters.status || ''}
         onChange={(v) => handleChange('status', v)}
-      />
+      /> */}
 
       <CustomDropdown
         label="Mesiac"
