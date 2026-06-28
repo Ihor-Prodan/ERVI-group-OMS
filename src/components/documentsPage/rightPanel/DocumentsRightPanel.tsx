@@ -1,4 +1,3 @@
-import React from 'react';
 import { Download, Trash2, Check, Clock, Calendar } from 'lucide-react';
 import type { DocumentEntry } from '../types';
 import { RightPanelHeader } from './RightPanelHeader';
