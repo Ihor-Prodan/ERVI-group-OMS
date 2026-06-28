@@ -19,7 +19,7 @@ export const DocumentsAddModal = ({ onClose, onSubmit }: Props) => {
     fileType: '',
     sumWithDph: '',
     sumWithoutDph: '',
-    dphRate: 20,
+    dphRate: 23,
     date: todayStr(),
     dueDate: '',
     isPaid: false,
@@ -260,7 +260,7 @@ export const DocumentsAddModal = ({ onClose, onSubmit }: Props) => {
           <div className="doc-modal-field">
             <label className="doc-modal-label">Sadzba DPH</label>
             <div className="doc-modal-rate-group">
-              {[0, 5, 10, 20].map(rate => (
+              {[0, 5, 10, 23].map(rate => (
                 <button
                   key={rate}
                   type="button"
