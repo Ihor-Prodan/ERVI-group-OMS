@@ -9,6 +9,7 @@ import ProtectedRoute from './ProtectedRoute';
 import useAuth from '../../hooks/useAuth';
 import PrivacyPolicy from '../privacypolicy/PrivacyPolicy';
 import DocumentsPage from '../documentsPage/DocumentsPage';
+import UsersPage from '../usersPage/UsersPage';
 
 interface AppRoutesProps {
   steps: ParcelStep[];
@@ -17,13 +18,17 @@ interface AppRoutesProps {
 }
 
 const AppRoutes: React.FC<AppRoutesProps> = ({ steps, setParcelNumber, setSteps }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
 
   return (
     <Routes>
       <Route
         path="/"
-        element={isAuthenticated ? <Navigate to="/admin/accepted" replace /> : <Fields />}
+        element={
+          isAuthenticated
+            ? <Navigate to={isAdmin ? '/admin/accepted' : '/admin/documents'} replace />
+            : <Fields />
+        }
       />
       <Route
         path="/tracking"
@@ -35,13 +40,18 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ steps, setParcelNumber, setSteps 
 
       <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
         <Route path="/admin" element={<AdminPanel />}>
-          <Route path="home" element={<Fields />} />
-          <Route path="accepted" element={<OrdersPage type="accepted" />} />
-          <Route path="sent" element={<OrdersPage type="sent" />} />
-          <Route path="delivered" element={<OrdersPage type="delivered" />} />
-          <Route path="paid" element={<OrdersPage type="paid" />} />
-          <Route path="cancelled" element={<OrdersPage type="cancelled" />} />
           <Route path="documents" element={<DocumentsPage />} />
+          {isAdmin && (
+            <>
+              <Route path="home" element={<Fields />} />
+              <Route path="accepted" element={<OrdersPage type="accepted" />} />
+              <Route path="sent" element={<OrdersPage type="sent" />} />
+              <Route path="delivered" element={<OrdersPage type="delivered" />} />
+              <Route path="paid" element={<OrdersPage type="paid" />} />
+              <Route path="cancelled" element={<OrdersPage type="cancelled" />} />
+              <Route path="users" element={<UsersPage />} />
+            </>
+          )}
         </Route>
       </Route>
     </Routes>

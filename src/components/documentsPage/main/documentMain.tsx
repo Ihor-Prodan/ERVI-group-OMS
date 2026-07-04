@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getDocumentPresignedUrl } from '../../API/API';
 import type { DocumentEntry } from '../types';
 import './documentMain.css';
 import { DocumentsHeader } from '../header/DocumentsHeader';
@@ -12,9 +13,11 @@ import ConfirmModal from '../../comfirmModal/ComfirmModal';
 
 interface DocumentsSectionProps {
   documents: DocumentEntry[];
+  isAdmin: boolean;
   onAddDocument: (doc: Omit<DocumentEntry, 'id' | 'createdAt'>) => Promise<void>;
   onDeleteDocument: (id: string) => Promise<void>;
   onTogglePaidDocument: (id: string) => Promise<void>;
+  onToggleVisibilityDocument: (id: string, visible: boolean) => Promise<void>;
 }
 
 const MONTH_NAMES_SK = [
@@ -24,9 +27,11 @@ const MONTH_NAMES_SK = [
 
 export default function DocumentsSection({
   documents,
+  isAdmin,
   onAddDocument,
   onDeleteDocument,
   onTogglePaidDocument,
+  onToggleVisibilityDocument,
 }: DocumentsSectionProps) {
   const docYears = Array.from(new Set(documents.map(d => new Date(d.date).getFullYear())));
   const defaultYears = [new Date().getFullYear(), new Date().getFullYear() - 1];
@@ -122,9 +127,12 @@ export default function DocumentsSection({
     }
   };
 
-  const handleDownload = (doc: DocumentEntry) => {
-    if (doc.fileUrl) {
-      window.open(doc.fileUrl, '_blank', 'noopener,noreferrer');
+  const handleDownload = async (doc: DocumentEntry) => {
+    try {
+      const { url } = await getDocumentPresignedUrl(doc.id);
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch {
+      alert('Nepodarilo sa získať odkaz na súbor.');
     }
   };
 
@@ -139,7 +147,8 @@ export default function DocumentsSection({
 
   return (
     <div className="documents-section">
-      <DocumentsHeader onAddDocument={() => setIsModalOpen(true)} />
+      <DocumentsHeader isAdmin={isAdmin} onAddDocument={() => setIsModalOpen(true)} />
+
 
       <DocumentsStats
         selectedYear={selectedYear}
@@ -190,18 +199,21 @@ export default function DocumentsSection({
         <DocumentsRightPanel
           selectedMonthIndex={selectedMonthIndex}
           selectedYear={selectedYear}
+          allDocs={documents}
           monthlyDocs={monthlyDocs}
           monthlyWithDph={monthlyWithDph}
           monthlyWithoutDph={monthlyWithoutDph}
           MONTH_NAMES_SK={MONTH_NAMES_SK}
           getDaysDiff={getDaysDiff}
+          isAdmin={isAdmin}
           onTogglePaid={handleTogglePaidWithConfirm}
+          onToggleVisibility={(id, visible) => onToggleVisibilityDocument(id, visible)}
           onDelete={handleDeleteWithConfirm}
           onDownload={handleDownload}
         />
       </div>
 
-      {isModalOpen && (
+      {isModalOpen && isAdmin && (
         <DocumentsAddModal
           onClose={() => setIsModalOpen(false)}
           onSubmit={handleModalSubmit}

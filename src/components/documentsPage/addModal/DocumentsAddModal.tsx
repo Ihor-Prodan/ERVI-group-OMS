@@ -17,12 +17,14 @@ export const DocumentsAddModal = ({ onClose, onSubmit }: Props) => {
     fileName: '',
     fileSize: '',
     fileType: '',
+    category: 'faktura' as 'faktura' | 'priloha',
     sumWithDph: '',
     sumWithoutDph: '',
     dphRate: 23,
     date: todayStr(),
     dueDate: '',
     isPaid: false,
+    visibleToAccountant: false,
     note: '',
   });
 
@@ -98,8 +100,11 @@ export const DocumentsAddModal = ({ onClose, onSubmit }: Props) => {
     const sumWith = parseFloat(formData.sumWithDph);
     const sumWithout = parseFloat(formData.sumWithoutDph);
 
-    if (!formData.name || isNaN(sumWith) || isNaN(sumWithout) || !formData.date) {
-      setFormError('Prosím, zadajte názov dokumentu, dátum a obe sumy s DPH aj bez DPH.');
+    const isFaktura = formData.category === 'faktura';
+    if (!formData.name || !formData.date || (isFaktura && (isNaN(sumWith) || isNaN(sumWithout)))) {
+      setFormError(isFaktura
+        ? 'Prosím, zadajte názov dokumentu, dátum a obe sumy s DPH aj bez DPH.'
+        : 'Prosím, zadajte názov dokumentu a dátum.');
       return;
     }
 
@@ -125,12 +130,14 @@ export const DocumentsAddModal = ({ onClose, onSubmit }: Props) => {
         fileName,
         fileSize,
         fileType,
-        sumWithDph: sumWith,
-        sumWithoutDph: sumWithout,
+        category: formData.category,
+        sumWithDph: formData.category === 'priloha' ? 0 : sumWith,
+        sumWithoutDph: formData.category === 'priloha' ? 0 : sumWithout,
         dphRate: formData.dphRate,
         date: formData.date,
-        dueDate: formData.dueDate || undefined,
-        isPaid: formData.dueDate ? formData.isPaid : true,
+        dueDate: formData.category === 'priloha' ? undefined : formData.dueDate || undefined,
+        isPaid: formData.category === 'priloha' ? true : formData.dueDate ? formData.isPaid : true,
+        visibleToAccountant: formData.visibleToAccountant,
         note: formData.note,
       });
     } catch {
@@ -156,6 +163,27 @@ export const DocumentsAddModal = ({ onClose, onSubmit }: Props) => {
         )}
 
         <form onSubmit={handleSubmit} className="doc-modal-form">
+          {/* Kategória */}
+          <div className="doc-modal-field">
+            <label className="doc-modal-label">Typ dokumentu</label>
+            <div className="doc-modal-rate-group">
+              <button
+                type="button"
+                className={`doc-modal-rate-btn ${formData.category === 'faktura' ? 'is-active' : ''}`}
+                onClick={() => setFormData(prev => ({ ...prev, category: 'faktura' }))}
+              >
+                Faktúra
+              </button>
+              <button
+                type="button"
+                className={`doc-modal-rate-btn ${formData.category === 'priloha' ? 'is-active' : ''}`}
+                onClick={() => setFormData(prev => ({ ...prev, category: 'priloha' }))}
+              >
+                Iná príloha
+              </button>
+            </div>
+          </div>
+
           {/* Drag & Drop */}
           <div className="doc-modal-field">
             <label className="doc-modal-label">Príloha (súbor dokumentu)</label>
@@ -225,88 +253,112 @@ export const DocumentsAddModal = ({ onClose, onSubmit }: Props) => {
             </span>
           </div>
 
-          {/* Splatnosť + zaplatená */}
-          <div className="doc-modal-grid">
-            <div className="doc-modal-field">
-              <label className="doc-modal-label">Splatnosť (nepovinná)</label>
-              <input
-                type="date"
-                className="doc-modal-input"
-                value={formData.dueDate}
-                onChange={e => setFormData(prev => ({ ...prev, dueDate: e.target.value }))}
-              />
-            </div>
-            <div className="doc-modal-field" style={{ justifyContent: 'flex-end' }}>
-              <div
-                className="doc-modal-checkbox-row"
-                onClick={() => setFormData(prev => ({ ...prev, isPaid: !prev.isPaid }))}
-              >
-                <input
-                  type="checkbox"
-                  id="isPaidCheck"
-                  className="doc-modal-checkbox"
-                  checked={formData.isPaid}
-                  onChange={e => setFormData(prev => ({ ...prev, isPaid: e.target.checked }))}
-                  onClick={e => e.stopPropagation()}
-                />
-                <label htmlFor="isPaidCheck" className="doc-modal-checkbox-label">
-                  Faktúra už zaplatená
-                </label>
+          {formData.category === 'faktura' && (
+            <>
+              {/* Splatnosť + zaplatená */}
+              <div className="doc-modal-grid">
+                <div className="doc-modal-field">
+                  <label className="doc-modal-label">Splatnosť (nepovinná)</label>
+                  <input
+                    type="date"
+                    className="doc-modal-input"
+                    value={formData.dueDate}
+                    onChange={e => setFormData(prev => ({ ...prev, dueDate: e.target.value }))}
+                  />
+                </div>
+                <div className="doc-modal-field" style={{ justifyContent: 'flex-end' }}>
+                  <div
+                    className="doc-modal-checkbox-row"
+                    onClick={() => setFormData(prev => ({ ...prev, isPaid: !prev.isPaid }))}
+                  >
+                    <input
+                      type="checkbox"
+                      id="isPaidCheck"
+                      className="doc-modal-checkbox"
+                      checked={formData.isPaid}
+                      onChange={e => setFormData(prev => ({ ...prev, isPaid: e.target.checked }))}
+                      onClick={e => e.stopPropagation()}
+                    />
+                    <label htmlFor="isPaidCheck" className="doc-modal-checkbox-label">
+                      Faktúra už zaplatená
+                    </label>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          {/* Sadzba DPH */}
+              {/* Sadzba DPH */}
+              <div className="doc-modal-field">
+                <label className="doc-modal-label">Sadzba DPH</label>
+                <div className="doc-modal-rate-group">
+                  {[0, 5, 10, 23].map(rate => (
+                    <button
+                      key={rate}
+                      type="button"
+                      className={`doc-modal-rate-btn ${formData.dphRate === rate ? 'is-active' : ''}`}
+                      onClick={() => handleRateChange(rate)}
+                    >
+                      {rate}%
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sumy */}
+              <div className="doc-modal-grid">
+                <div className="doc-modal-field">
+                  <label className="doc-modal-label">Suma bez DPH (€) *</label>
+                  <div className="doc-modal-input-wrapper">
+                    <input
+                      type="number"
+                      step="0.01"
+                      className="doc-modal-input doc-modal-input--number"
+                      value={formData.sumWithoutDph}
+                      onChange={e => handleVat('bezDph', e.target.value)}
+                      placeholder="0.00"
+                    />
+                    <span className="doc-modal-input-suffix">bez DPH</span>
+                  </div>
+                </div>
+                <div className="doc-modal-field">
+                  <label className="doc-modal-label">Suma s DPH ({formData.dphRate}%) *</label>
+                  <div className="doc-modal-input-wrapper">
+                    <input
+                      type="number"
+                      step="0.01"
+                      className="doc-modal-input doc-modal-input--number"
+                      value={formData.sumWithDph}
+                      onChange={e => handleVat('sDph', e.target.value)}
+                      placeholder="0.00"
+                    />
+                    <span className="doc-modal-input-suffix">s DPH</span>
+                  </div>
+                </div>
+              </div>
+              <span className="doc-modal-hint">
+                Obe sumy sa automaticky dopočítavajú podľa zvolenej sadzby DPH.
+              </span>
+            </>
+          )}
+
+          {/* Viditeľnosť pre účtovníka */}
           <div className="doc-modal-field">
-            <label className="doc-modal-label">Sadzba DPH</label>
-            <div className="doc-modal-rate-group">
-              {[0, 5, 10, 23].map(rate => (
-                <button
-                  key={rate}
-                  type="button"
-                  className={`doc-modal-rate-btn ${formData.dphRate === rate ? 'is-active' : ''}`}
-                  onClick={() => handleRateChange(rate)}
-                >
-                  {rate}%
-                </button>
-              ))}
+            <div
+              className="doc-modal-checkbox-row"
+              onClick={() => setFormData(prev => ({ ...prev, visibleToAccountant: !prev.visibleToAccountant }))}
+            >
+              <input
+                type="checkbox"
+                id="visibleCheck"
+                className="doc-modal-checkbox"
+                checked={formData.visibleToAccountant}
+                onChange={e => setFormData(prev => ({ ...prev, visibleToAccountant: e.target.checked }))}
+                onClick={e => e.stopPropagation()}
+              />
+              <label htmlFor="visibleCheck" className="doc-modal-checkbox-label">
+                Viditeľné pre účtovníka
+              </label>
             </div>
           </div>
-
-          {/* Sumy */}
-          <div className="doc-modal-grid">
-            <div className="doc-modal-field">
-              <label className="doc-modal-label">Suma bez DPH (€) *</label>
-              <div className="doc-modal-input-wrapper">
-                <input
-                  type="number"
-                  step="0.01"
-                  className="doc-modal-input doc-modal-input--number"
-                  value={formData.sumWithoutDph}
-                  onChange={e => handleVat('bezDph', e.target.value)}
-                  placeholder="0.00"
-                />
-                <span className="doc-modal-input-suffix">bez DPH</span>
-              </div>
-            </div>
-            <div className="doc-modal-field">
-              <label className="doc-modal-label">Suma s DPH ({formData.dphRate}%) *</label>
-              <div className="doc-modal-input-wrapper">
-                <input
-                  type="number"
-                  step="0.01"
-                  className="doc-modal-input doc-modal-input--number"
-                  value={formData.sumWithDph}
-                  onChange={e => handleVat('sDph', e.target.value)}
-                  placeholder="0.00"
-                />
-                <span className="doc-modal-input-suffix">s DPH</span>
-              </div>
-            </div>
-          </div>
-          <span className="doc-modal-hint">
-            Obe sumy sa automaticky dopočítavajú podľa zvolenej sadzby DPH.
-          </span>
 
           {/* Poznámka */}
           <div className="doc-modal-field">

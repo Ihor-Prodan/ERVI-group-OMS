@@ -6,10 +6,13 @@ import {
   PackageX,
   LayoutList,
   CreditCard,
-  FileText
-} from 'lucide-react';import './Sidebar.css';
+  FileText,
+  Users
+} from 'lucide-react';
+import './Sidebar.css';
 import Button from '../../UI-elements/button/Buttot';
 import { changePassword } from '../API/API';
+import useAuth from '../../hooks/useAuth';
 
 interface SidebarProps {
   active: string;
@@ -18,6 +21,7 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ active, onChange, className }) => {
+  const { isAdmin } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -30,15 +34,18 @@ const Sidebar: React.FC<SidebarProps> = ({ active, onChange, className }) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
 
-const items = [
-  { id: 'accepted', label: 'Nové', icon: <PackagePlus size={18} /> },
-  { id: 'sent', label: 'Odoslané', icon: <PackageCheck size={18} /> },
-  { id: 'delivered', label: 'Doručené', icon: <Package size={18} /> },
-  { id: 'paid', label: 'Zaplatené', icon: <CreditCard size={18} /> },
-  { id: 'cancelled', label: 'Zrušené', icon: <PackageX size={18} /> },
-  { id: 'documents', label: 'Dokumenty', icon: <FileText size={18} /> },
-  { id: 'home', label: 'Formulár', icon: <LayoutList size={18} /> },
+const allItems = [
+  { id: 'accepted', label: 'Nové', icon: <PackagePlus size={18} />, adminOnly: true },
+  { id: 'sent', label: 'Odoslané', icon: <PackageCheck size={18} />, adminOnly: true },
+  { id: 'delivered', label: 'Doručené', icon: <Package size={18} />, adminOnly: true },
+  { id: 'paid', label: 'Zaplatené', icon: <CreditCard size={18} />, adminOnly: true },
+  { id: 'cancelled', label: 'Zrušené', icon: <PackageX size={18} />, adminOnly: true },
+  { id: 'documents', label: 'Dokumenty', icon: <FileText size={18} />, adminOnly: false },
+  { id: 'home', label: 'Formulár', icon: <LayoutList size={18} />, adminOnly: true },
+  { id: 'users', label: 'Používatelia', icon: <Users size={18} />, adminOnly: true },
 ];
+
+const items = allItems.filter(item => !item.adminOnly || isAdmin);
 
   const handlePasswordChange = async () => {
     if (newPassword !== confirmPassword) {

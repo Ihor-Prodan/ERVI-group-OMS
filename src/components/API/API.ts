@@ -147,6 +147,9 @@ export const fetchAvailableSlots = async (company: string, date: string) => {
 export const getDocuments = async () =>
   fetchWithRefresh("/documents", { method: "GET" });
 
+export const getDocumentPresignedUrl = async (id: string): Promise<{ url: string }> =>
+  fetchWithRefresh(`/documents/${id}/presigned`, { method: "GET" });
+
 export const uploadDocumentFile = async (file: File): Promise<{
   fileUrl: string;
   fileName: string;
@@ -187,4 +190,31 @@ export const toggleDocumentPaid = async (id: string, isPaid: boolean) =>
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ isPaid }),
   });
+
+export const toggleDocumentVisibility = async (id: string, visibleToAccountant: boolean) =>
+  fetchWithRefresh(`/documents/${id}/visibility`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ visibleToAccountant }),
+  });
+
+// ─── Users (admin only) ───────────────────────────────────────────────────────
+
+export const getUsers = async () => fetchWithRefresh("/auth/users", { method: "GET" });
+
+export const createUser = async (data: {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  role: 'admin' | 'accountant';
+}) =>
+  fetchWithRefresh("/auth/users", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+export const deleteUser = async (id: string) =>
+  fetchWithRefresh(`/auth/users/${id}`, { method: "DELETE" });
 

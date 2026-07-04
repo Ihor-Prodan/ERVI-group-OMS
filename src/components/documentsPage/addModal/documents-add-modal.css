@@ -138,6 +138,12 @@
   font-family: monospace;
 }
 
+.doc-modal-input--readonly {
+  background: #f8fafc;
+  color: #64748b;
+  cursor: default;
+}
+
 .doc-modal-input-suffix {
   position: absolute;
   right: 14px;

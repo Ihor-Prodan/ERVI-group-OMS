@@ -1,18 +1,20 @@
+export type DocumentCategory = 'faktura' | 'priloha';
+
 export interface DocumentEntry {
   id: string;
   name: string;
-  // file server fields
   fileUrl: string;
   fileName: string;
   fileSize?: string;
   fileType?: string;
-  // accounting
+  category: DocumentCategory;
   sumWithDph: number;
   sumWithoutDph: number;
   dphRate: number;
   date: string;
   dueDate?: string;
   isPaid?: boolean;
+  visibleToAccountant?: boolean;
   note?: string;
   createdAt: string;
 }

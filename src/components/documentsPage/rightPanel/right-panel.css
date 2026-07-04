@@ -145,6 +145,65 @@
   color: #94a3b8;
 }
 
+.rp-tabs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.rp-tabs {
+  display: flex;
+}
+
+.rp-tab {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  background: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+  outline: none;
+}
+
+.rp-tab:hover {
+  color: #1e293b;
+}
+
+.rp-tab--active {
+  color: #3563e9;
+  border-bottom-color: #3563e9;
+  font-weight: 600;
+}
+
+.rp-print-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+  margin-bottom: 4px;
+  outline: none;
+}
+
+.rp-print-btn:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
 /* ===== TABLE (desktop) ===== */
 
 .rp-table-wrapper {

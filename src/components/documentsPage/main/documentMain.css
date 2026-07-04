@@ -4,6 +4,36 @@
   gap: 1.25rem;
 }
 
+.doc-tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0;
+}
+
+.doc-tab {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  background: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.doc-tab:hover {
+  color: #1e293b;
+}
+
+.doc-tab--active {
+  color: #3563e9;
+  border-bottom-color: #3563e9;
+  font-weight: 600;
+}
+
 @media (min-width: 768px) {
   .documents-section {
     gap: 1.5rem;

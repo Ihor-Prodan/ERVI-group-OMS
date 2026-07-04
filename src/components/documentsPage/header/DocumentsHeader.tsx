@@ -2,10 +2,11 @@ import { Plus } from 'lucide-react';
 import './DocumentsHeader.css';
 
 interface Props {
+  isAdmin: boolean;
   onAddDocument: () => void;
 }
 
-export const DocumentsHeader = ({ onAddDocument }: Props) => {
+export const DocumentsHeader = ({ isAdmin, onAddDocument }: Props) => {
   return (
     <div className="documents-header">
       <div className="documents-header__content">
@@ -18,13 +19,12 @@ export const DocumentsHeader = ({ onAddDocument }: Props) => {
         </p>
       </div>
 
-      <button
-        onClick={onAddDocument}
-        className="documents-header__button"
-      >
-        <Plus size={16} />
-        <span>Nahrať nový dokument</span>
-      </button>
+      {isAdmin && (
+        <button onClick={onAddDocument} className="documents-header__button">
+          <Plus size={16} />
+          <span>Nahrať nový dokument</span>
+        </button>
+      )}
     </div>
   );
 };

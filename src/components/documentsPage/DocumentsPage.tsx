@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import type { DocumentEntry } from './types';
 import DocumentsSection from './main/documentMain';
 import Loader from '../../UI-elements/loader/Loader';
-import { getDocuments, createDocument, deleteDocument, toggleDocumentPaid } from '../API/API';
+import { getDocuments, createDocument, deleteDocument, toggleDocumentPaid, toggleDocumentVisibility } from '../API/API';
+import useAuth from '../../hooks/useAuth';
 import './DocumentsPage.css';
 
 const DocumentsPage: React.FC = () => {
+  const { isAdmin } = useAuth();
   const [documents, setDocuments] = useState<DocumentEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,6 +36,11 @@ const DocumentsPage: React.FC = () => {
     setDocuments(prev => prev.map(d => (d.id === id ? updated : d)));
   };
 
+  const handleToggleVisibility = async (id: string, visible: boolean) => {
+    const updated = await toggleDocumentVisibility(id, visible);
+    setDocuments(prev => prev.map(d => (d.id === id ? updated : d)));
+  };
+
   if (isLoading) return <Loader fullscreen />;
 
   if (error) return <div className="documents-page-error">{error}</div>;
@@ -42,9 +49,11 @@ const DocumentsPage: React.FC = () => {
     <div className="documents-page">
       <DocumentsSection
         documents={documents}
+        isAdmin={isAdmin}
         onAddDocument={handleAddDocument}
         onDeleteDocument={handleDeleteDocument}
         onTogglePaidDocument={handleTogglePaid}
+        onToggleVisibilityDocument={handleToggleVisibility}
       />
     </div>
   );
