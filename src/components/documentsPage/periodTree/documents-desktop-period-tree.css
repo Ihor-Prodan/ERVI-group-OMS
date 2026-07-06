@@ -2,7 +2,7 @@
 .documents-desktop-tree {
   display: none; /* hidden on mobile */
   flex-shrink: 0;
-  width: 16rem;
+  width: 11rem;
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
@@ -12,7 +12,13 @@
 
 @media (min-width: 1024px) {
   .documents-desktop-tree {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    overflow-y: auto;
+  }
+  .documents-desktop-tree__list {
+    flex: 1;
   }
 }
 
