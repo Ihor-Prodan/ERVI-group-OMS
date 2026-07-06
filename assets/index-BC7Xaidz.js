@@ -291,10 +291,13 @@ Please change the parent <Route path="${O}"> to <Route path="${O==="/"?"*":`${O}
           .doc-label { padding: 8px 14px; font-size: 11px; font-weight: 600; color: #64748b;
             background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
           @media print {
+            @page { margin: 0; size: A4; }
             .toolbar { display: none; }
             .content { padding: 0; max-width: 100%; gap: 0; }
-            .doc-block { box-shadow: none; border-radius: 0; page-break-after: always; }
-            .doc-label { border-bottom: none; }
+            .doc-block { box-shadow: none; border-radius: 0; page-break-after: always; page-break-inside: avoid; height: 100vh; overflow: hidden; }
+            .doc-label { font-size: 9px; padding: 4px 8px; }
+            iframe { height: calc(100vh - 22px) !important; width: 100% !important; }
+            img { max-height: calc(100vh - 22px); width: auto; max-width: 100%; }
             body { background: #fff; }
           }
         </style>
