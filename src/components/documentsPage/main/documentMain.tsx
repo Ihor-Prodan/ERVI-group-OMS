@@ -199,7 +199,6 @@ export default function DocumentsSection({
         <DocumentsRightPanel
           selectedMonthIndex={selectedMonthIndex}
           selectedYear={selectedYear}
-          allDocs={documents}
           monthlyDocs={monthlyDocs}
           monthlyWithDph={monthlyWithDph}
           monthlyWithoutDph={monthlyWithoutDph}

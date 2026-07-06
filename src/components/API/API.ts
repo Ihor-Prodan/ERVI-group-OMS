@@ -1,5 +1,5 @@
-// const API_URL = "https://api.ervi-group.com/api";
-const API_URL = "http://localhost:4000/api";
+const API_URL = "https://api.ervi-group.com/api";
+// const API_URL = "http://localhost:4000/api";
 
 const handleResponse = async (res: Response) => {
   if (!res.ok) {
@@ -217,4 +217,11 @@ export const createUser = async (data: {
 
 export const deleteUser = async (id: string) =>
   fetchWithRefresh(`/auth/users/${id}`, { method: "DELETE" });
+
+export const mergePrintDocuments = async (ids: string[]): Promise<Blob> =>
+  fetchWithRefresh("/documents/merge-pdf", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ids }),
+  });
 
