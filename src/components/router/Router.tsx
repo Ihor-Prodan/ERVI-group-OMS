@@ -18,7 +18,7 @@ interface AppRoutesProps {
 }
 
 const AppRoutes: React.FC<AppRoutesProps> = ({ steps, setParcelNumber, setSteps }) => {
-  const { isAuthenticated, isAdmin } = useAuth();
+  const { isAuthenticated, isAdmin, isLoading } = useAuth();
 
   return (
     <Routes>
@@ -38,7 +38,7 @@ const AppRoutes: React.FC<AppRoutesProps> = ({ steps, setParcelNumber, setSteps 
       />
       <Route path="/ochrana-osobnych-udajov" element={<PrivacyPolicy />} />
 
-      <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
+      <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} isLoading={isLoading} />}>
         <Route path="/admin" element={<AdminPanel />}>
           <Route path="documents" element={<DocumentsPage />} />
           {isAdmin && (
