@@ -128,10 +128,12 @@ export default function DocumentsSection({
   };
 
   const handleDownload = async (doc: DocumentEntry) => {
+    const win = window.open('', '_blank');
     try {
       const { url } = await getDocumentPresignedUrl(doc.id);
-      window.open(url, '_blank', 'noopener,noreferrer');
+      if (win) win.location.href = url;
     } catch {
+      if (win) win.close();
       alert('Nepodarilo sa získať odkaz na súbor.');
     }
   };

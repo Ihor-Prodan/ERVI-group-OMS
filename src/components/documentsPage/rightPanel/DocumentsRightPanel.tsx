@@ -45,13 +45,16 @@ export const DocumentsRightPanel = ({
 
   const handlePrint = async () => {
     if (filteredDocs.length === 0) return;
+    const win = window.open('', '_blank');
     setIsPrinting(true);
     try {
       const ids = filteredDocs.map(d => d.id);
       const blob = await mergePrintDocuments(ids);
       const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
+      if (win) win.location.href = url;
       setTimeout(() => URL.revokeObjectURL(url), 60000);
+    } catch {
+      if (win) win.close();
     } finally {
       setIsPrinting(false);
     }
