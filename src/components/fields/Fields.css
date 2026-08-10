@@ -4,6 +4,44 @@
   height: 100%;
 }
 
+.fields-hero {
+  background: linear-gradient(135deg, #1e293b 0%, #2563eb 100%);
+  color: #fff;
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.fields-hero__title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+}
+
+.fields-hero__desc {
+  font-size: 1rem;
+  color: #cbd5e1;
+  margin: 0 0 1.25rem;
+  max-width: 600px;
+}
+
+.fields-hero__info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  font-size: 0.875rem;
+  color: #e2e8f0;
+}
+
+@media (max-width: 600px) {
+  .fields-hero {
+    padding: 1.25rem 1.25rem;
+  }
+  .fields-hero__title {
+    font-size: 1.25rem;
+  }
+}
+
 .fields-section h2 {
   margin-bottom: 1.5rem;
   color: #111827;

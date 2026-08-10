@@ -137,6 +137,21 @@ export const Fields = () => {
 
   return (
     <section className="fields-section">
+      {!notification && (
+        <div className="fields-hero">
+          <h1 className="fields-hero__title">Preprava a logistika</h1>
+          <p className="fields-hero__desc">
+            ERVI Group s.r.o. poskytuje profesionálne prepravné a logistické služby.
+            Vyplňte objednávku nižšie a my sa postaráme o zvyšok.
+          </p>
+          <div className="fields-hero__info">
+            <span>📍 Trnavská cesta 112A, Bratislava</span>
+            <span>✉️ info@ervi-group.com</span>
+            <span>📞 +421 911 640 665</span>
+            <span>IČO: 56829175</span>
+          </div>
+        </div>
+      )}
       {!notification && <h2 style={{ textAlign: 'center' }}>Objednávka dopravy</h2>}
 
       {notification && (
