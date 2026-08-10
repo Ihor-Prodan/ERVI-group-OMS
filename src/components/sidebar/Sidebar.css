@@ -76,6 +76,23 @@
     color 0.2s ease;
 }
 
+.sidebar-badge {
+  margin-left: auto;
+  background: #3b82f6;
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 999px;
+  min-width: 20px;
+  text-align: center;
+  line-height: 18px;
+}
+
+.sidebar-item.active .sidebar-badge {
+  background: rgba(255, 255, 255, 0.25);
+}
+
 .sidebar-item:hover {
   background: #334155;
   color: #fff;

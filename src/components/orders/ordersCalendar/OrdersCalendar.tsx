@@ -118,7 +118,9 @@ const OrdersCalendar: React.FC<OrdersCalendarProps> = ({
         <div className="order-calendar-orders-list">
           <h3>Objednávky pre {selectedDate}</h3>
           <ul>
-            {ordersByDate[selectedDate].map((o) => (
+            {[...ordersByDate[selectedDate]]
+              .sort((a, b) => new Date(a.statusDates.sent!).getTime() - new Date(b.statusDates.sent!).getTime())
+              .map((o) => (
               <li
                 key={o.id}
                 onClick={() => setSelectedOrder(o)}

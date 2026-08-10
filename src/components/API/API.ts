@@ -95,6 +95,9 @@ export const checkAuth = async () => {
 
 export const getOrders = async () => fetchWithRefresh("/orders", { method: "GET" });
 
+export const getOrderCounts = async (): Promise<Record<string, number>> =>
+  fetchWithRefresh("/orders/counts", { method: "GET" });
+
 export const changeOrderStatus = async (
   id: string,
   status: "accepted" | "sent" | "paid" | "cancelled" | "delivered",

@@ -18,9 +18,10 @@ interface SidebarProps {
   active: string;
   onChange: (val: string) => void;
   className?: string;
+  orderCounts?: Record<string, number>;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ active, onChange, className }) => {
+const Sidebar: React.FC<SidebarProps> = ({ active, onChange, className, orderCounts = {} }) => {
   const { isAdmin } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [oldPassword, setOldPassword] = useState('');
@@ -97,16 +98,22 @@ const items = allItems.filter(item => !item.adminOnly || isAdmin);
       <div className="sidebar-content">
         <div className="sidebar-logo">Admin Panel</div>
         <nav className="sidebar-nav">
-          {items.map((item) => (
-            <button
-              key={item.id}
-              className={`sidebar-item ${active === item.id ? 'active' : ''}`}
-              onClick={() => onChange(item.id)}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </button>
-          ))}
+          {items.map((item) => {
+            const count = orderCounts[item.id];
+            return (
+              <button
+                key={item.id}
+                className={`sidebar-item ${active === item.id ? 'active' : ''}`}
+                onClick={() => onChange(item.id)}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+                {count != null && count > 0 && (
+                  <span className="sidebar-badge">{count}</span>
+                )}
+              </button>
+            );
+          })}
         </nav>
       </div>
 
