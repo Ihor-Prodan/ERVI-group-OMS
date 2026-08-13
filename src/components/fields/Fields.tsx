@@ -140,10 +140,6 @@ export const Fields = () => {
       {!notification && (
         <div className="fields-hero">
           <h1 className="fields-hero__title">Preprava a logistika</h1>
-          <p className="fields-hero__desc">
-            ERVI Group s.r.o. poskytuje profesionálne prepravné a logistické služby.
-            Vyplňte objednávku nižšie a my sa postaráme o zvyšok.
-          </p>
           <div className="fields-hero__info">
             <span>📍 Trnavská cesta 112A, Bratislava</span>
             <span>✉️ info@ervi-group.com</span>
