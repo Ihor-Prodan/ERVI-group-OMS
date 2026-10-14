@@ -103,7 +103,7 @@
 }
 
 .doc-modal-input:focus {
-  border-color: #3b82f6;
+  border-color: #1e293b;
   background: #fff;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
@@ -178,7 +178,7 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: #2563eb;
+  accent-color: #1e293b;
 }
 
 .doc-modal-checkbox-label {
@@ -210,7 +210,7 @@
 }
 
 .doc-modal-dropzone.is-drag-active {
-  border-color: #3b82f6;
+  border-color: #1e293b;
   background: rgba(239, 246, 255, 0.5);
 }
 
@@ -245,7 +245,7 @@
 }
 
 .doc-modal-dropzone-link {
-  color: #2563eb;
+  color: #1e293b;
   text-decoration: underline;
 }
 
@@ -294,8 +294,8 @@
 }
 
 .doc-modal-rate-btn.is-active {
-  background: #2563eb;
-  border-color: #2563eb;
+  background: #1e293b;
+  border-color: #1e293b;
   color: #fff;
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
 }
@@ -335,7 +335,7 @@
 }
 
 .doc-modal-btn--submit {
-  background: #2563eb;
+  background: #1e293b;
   color: #fff;
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
 }

@@ -11,9 +11,10 @@ import Loader from '../../../UI-elements/loader/Loader';
 interface OrderDetailsModalProps {
   order: OrderDetails;
   onClose: () => void;
+  readOnly?: boolean;
 }
 
-const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose }) => {
+const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose, readOnly }) => {
   const [loading, setLoading] = useState(false);
 
   const handleDownloadDoc = async () => {
@@ -40,6 +41,10 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose })
   const companyName =
     COMPANY_OPTIONS.find((c) => c.value === order.company)?.label || order.company;
 
+  const statusDot = (color: string) => (
+    <span className="details-dot" style={{ backgroundColor: color }} />
+  );
+
   return (
     <div className="details-modal-overlay">
       <div className="details-modal">
@@ -48,42 +53,66 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose })
         </button>
         <h2 className="details-title">Detaily objednávky</h2>
 
+        {order.source === 'reservation' && (
+          <div className="details-reservation-banner">
+            <span className="details-reservation-badge">Rezervácia</span>
+          </div>
+        )}
+
         <h3 className="details-section-title">Stav objednávky č. {order.deliveryNumber}</h3>
         <div className="details-grid">
           <div className="details-row">
             <div className="details-label">Status</div>
-            <div className="details-value" style={{ color: statusMap[order.status].color }}>
-              {statusMap[order.status].label}
+            <div className="details-value">
+              <span
+                className="details-status-pill"
+                style={{
+                  backgroundColor: statusMap[order.status].color,
+                  color: statusMap[order.status].color === '#aef840ff' ? '#1e293b' : '#fff',
+                }}
+              >
+                {statusMap[order.status].label}
+              </span>
             </div>
           </div>
           {order.statusDates.accepted && (
             <div className="details-row">
               <div className="details-label">Prijaté</div>
-              <div className="details-value">{formatDate(order.statusDates.accepted)}</div>
+              <div className="details-value">
+                {statusDot(statusMap.accepted.color)} {formatDate(order.statusDates.accepted)}
+              </div>
             </div>
           )}
           {order.statusDates.sent && (
             <div className="details-row">
               <div className="details-label">Odoslané</div>
-              <div className="details-value">{formatDate(order.statusDates.sent)}</div>
+              <div className="details-value">
+                {statusDot(statusMap.sent.color)} {formatDate(order.statusDates.sent)}
+              </div>
             </div>
           )}
           {order.statusDates.cancelled && (
             <div className="details-row">
               <div className="details-label">Zrušené</div>
-              <div className="details-value">{formatDate(order.statusDates.cancelled)}</div>
+              <div className="details-value">
+                {statusDot(statusMap.cancelled.color)} {formatDate(order.statusDates.cancelled)}
+              </div>
             </div>
           )}
           {order.statusDates.delivered && (
             <div className="details-row">
               <div className="details-label">Doručené</div>
-              <div className="details-value">{formatDate(order.statusDates.delivered)}</div>
+              <div className="details-value">
+                {statusDot(statusMap.delivered.color)} {formatDate(order.statusDates.delivered)}
+              </div>
             </div>
           )}
           {order.statusDates.paid && (
             <div className="details-row">
               <div className="details-label">Zaplatené</div>
-              <div className="details-value">{formatDate(order.statusDates.paid)}</div>
+              <div className="details-value">
+                {statusDot(statusMap.paid.color)} {formatDate(order.statusDates.paid)}
+              </div>
             </div>
           )}
         </div>
@@ -218,15 +247,17 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({ order, onClose })
           )}
         </div>
 
-        <div className="details-actions">
-          {loading ? (
-            <Loader fullscreen={true} />
-          ) : (
-            <button className="btn download" onClick={handleDownloadDoc}>
-              Stiahnuť PDF
-            </button>
-          )}
-        </div>
+        {!readOnly && (
+          <div className="details-actions">
+            {loading ? (
+              <Loader fullscreen={true} />
+            ) : (
+              <button className="btn download" onClick={handleDownloadDoc}>
+                Stiahnuť PDF
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

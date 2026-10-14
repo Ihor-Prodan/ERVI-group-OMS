@@ -122,6 +122,8 @@ export default function DocumentsSection({
       if (confirmState.action === 'delete') await onDeleteDocument(confirmState.id);
       else await onTogglePaidDocument(confirmState.id);
       setConfirmState(null);
+    } catch (err: any) {
+      alert(err.message || 'Akciu sa nepodarilo vykonať.');
     } finally {
       setIsConfirming(false);
     }

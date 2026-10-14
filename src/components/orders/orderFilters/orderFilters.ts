@@ -1,15 +1,39 @@
 import type { OrderDetails, OrderStatus } from "../types";
 
+const SEARCHABLE_FIELDS: (keyof OrderDetails)[] = [
+  'deliveryNumber',
+  'contractNumber',
+  'company',
+  'fullname',
+  'email',
+  'phone',
+  'street',
+  'city',
+  'psc',
+  'country',
+  'from',
+  'to',
+  'receiverEmail',
+  'receiverPhone',
+  'receiverStreet',
+  'receiverCity',
+  'receiverPsc',
+  'receiverCountry',
+];
+
 export const filterOrders = (
   orders: OrderDetails[],
   filters: {
     status?: OrderStatus;
     country?: string;
     date?: string; // YYYY-MM
+    search?: string;
   }
 ) => {
   const normalizeCountry = (name?: string) =>
     name?.trim().toLowerCase().replace(/\s+/g, '').replace(/[^\p{L}]/gu, '') || '';
+
+  const normalizeSearch = (value?: string) => value?.trim().toLowerCase() || '';
 
   return orders.filter((o) => {
     if (filters.status && o.status !== filters.status) {
@@ -36,6 +60,17 @@ export const filterOrders = (
       if (orderMonth !== filters.date) {
         return false
       };
+    }
+
+    if (filters.search) {
+      const term = normalizeSearch(filters.search);
+      const matches = SEARCHABLE_FIELDS.some((field) =>
+        String(o[field] ?? '').toLowerCase().includes(term)
+      );
+
+      if (!matches) {
+        return false;
+      }
     }
 
     return true;

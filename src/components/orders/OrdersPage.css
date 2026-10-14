@@ -1,0 +1,99 @@
+.orders-page {
+  padding: 2rem;
+  max-width: 980px;
+}
+
+@media (max-width: 600px) {
+  .orders-page {
+    padding: 1rem;
+  }
+}
+
+.orders-page-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.75rem;
+}
+
+.orders-page-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--ink-900);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.orders-page-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.orders-toolbar {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.orders-toolbar .order-calendar-open-btn {
+  flex-shrink: 0;
+}
+
+.filters-search-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 2 1 260px;
+}
+
+.filters-search-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #4f5a70;
+  margin-bottom: 0.25rem;
+}
+
+.filters-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  height: 38px;
+  background: #fff;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  color: var(--ink-400);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.filters-search:hover {
+  border-color: #cbd5e1;
+}
+
+.filters-search:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(36, 81, 199, 0.12);
+}
+
+.filters-search svg {
+  flex-shrink: 0;
+}
+
+.filters-search input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: var(--ink-900);
+  background: transparent;
+}

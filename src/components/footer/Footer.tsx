@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './Footer.css';
 
 const Footer: React.FC = () => {
@@ -13,6 +14,18 @@ const Footer: React.FC = () => {
         <p>Kontaktujte nás:</p>
         <p>Email: info@ervi-group.com</p>
         <p>Phone: +421 911 640 665</p>
+      </div>
+
+      <div className="footer-right">
+        <p>
+          <Link to="/ochrana-osobnych-udajov">Ochrana osobných údajov</Link>
+        </p>
+        <p>
+          <Link to="/obchodne-podmienky">Obchodné podmienky</Link>
+        </p>
+        <p>
+          <Link to="/reklamacny-poriadok">Reklamačný poriadok</Link>
+        </p>
       </div>
     </footer>
   );

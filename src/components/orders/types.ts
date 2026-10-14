@@ -1,9 +1,11 @@
 export type OrderStatus = 'sent' | 'accepted' | 'cancelled' | 'delivered' | 'paid';
+export type OrderSource = 'form' | 'reservation' | 'contact';
 
 export type FilterOptions = {
   status?: OrderStatus;
   country?: string;
   date?: string;
+  search?: string;
 }
 
 export type OrderDetails = {
@@ -18,6 +20,7 @@ export type OrderDetails = {
   country: string;
   date: string;
   status: OrderStatus;
+  source?: OrderSource;
   statusDates: {
     sent?: string | null;
     accepted?: string;

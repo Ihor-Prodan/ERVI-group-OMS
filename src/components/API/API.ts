@@ -43,6 +43,13 @@ const fetchWithRefresh = async (input: string, init?: RequestInit, retry = true)
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
 
+    if (
+      errorData.code === "PASSWORD_CHANGE_REQUIRED" &&
+      !window.location.hash.includes("/change-password")
+    ) {
+      window.location.hash = "/change-password";
+    }
+
     throw new Error(errorData.message || "Server error");
   }
 
@@ -54,18 +61,33 @@ const fetchWithRefresh = async (input: string, init?: RequestInit, retry = true)
   return res.json();
 };
 
-export const createOrder = async (orderData: any) => {
-  const res = await fetch(`${API_URL}/orders`, {
+export const createOrder = async (orderData: any) =>
+  fetchWithRefresh("/orders", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(orderData),
   });
 
+export const getOrderByTrackingNumber = async (trackingNumber: string) => {
+  const res = await fetch(`${API_URL}/orders/${trackingNumber}`);
+
   return handleResponse(res);
 };
 
-export const getOrderByTrackingNumber = async (trackingNumber: string) => {
-  const res = await fetch(`${API_URL}/orders/${trackingNumber}`);
+export const sendContactMessage = async (data: {
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  message: string;
+  honeypot: string;
+  gdpr: boolean;
+}) => {
+  const res = await fetch(`${API_URL}/contact`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
 
   return handleResponse(res);
 };
@@ -122,6 +144,11 @@ export const generateOrderDocument = async (id: string) => {
   return fetchWithRefresh(`/orders/${id}/doc`, { method: "GET" });
 };
 
+export const generateDayOrdersDocument = async (ids: string[], date: string) => {
+  const params = new URLSearchParams({ ids: ids.join(","), date });
+  return fetchWithRefresh(`/orders/day-doc?${params.toString()}`, { method: "GET" });
+};
+
 export const changePassword = async (oldPassword: string, newPassword: string) => {
   return fetchWithRefresh("/auth/change-password", {
     method: "POST",
@@ -134,16 +161,11 @@ export const logout = async () => {
   return fetchWithRefresh("/auth/logout", { method: "POST" });
 };
 
-export const fetchAvailableSlots = async (company: string, date: string) => {
-  const url = `${API_URL}/orders/timeslots?company=${company}&date=${date}`;
-
-  const res = await fetch(url, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  });
-
-  return handleResponse(res);
-};
+export const fetchAvailableSlots = async (company: string, date: string) =>
+  fetchWithRefresh(
+    `/orders/timeslots?company=${encodeURIComponent(company)}&date=${encodeURIComponent(date)}`,
+    { method: "GET" }
+  );
 
 // ─── Documents ────────────────────────────────────────────────────────────────
 
@@ -207,10 +229,10 @@ export const getUsers = async () => fetchWithRefresh("/auth/users", { method: "G
 
 export const createUser = async (data: {
   email: string;
-  password: string;
   firstName: string;
   lastName: string;
-  role: 'admin' | 'accountant';
+  role: 'admin' | 'accountant' | 'company';
+  companyId?: string;
 }) =>
   fetchWithRefresh("/auth/users", {
     method: "POST",
@@ -218,8 +240,43 @@ export const createUser = async (data: {
     body: JSON.stringify(data),
   });
 
+export const resetUserPassword = async (id: string) =>
+  fetchWithRefresh(`/auth/users/${id}/reset-password`, { method: "POST" });
+
 export const deleteUser = async (id: string) =>
   fetchWithRefresh(`/auth/users/${id}`, { method: "DELETE" });
+
+// ─── Companies (admin only) ───────────────────────────────────────────────────
+
+export type Company = {
+  id: string;
+  slug: string;
+  name: string;
+  street: string;
+  psc: string;
+  city: string;
+  country: string;
+  email: string;
+  phone: string;
+};
+
+export const getCompanies = async (): Promise<Company[]> =>
+  fetchWithRefresh("/companies", { method: "GET" });
+
+export const createCompany = async (data: {
+  name: string;
+  street?: string;
+  psc?: string;
+  city?: string;
+  country?: string;
+  email?: string;
+  phone?: string;
+}): Promise<Company> =>
+  fetchWithRefresh("/companies", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
 
 export const mergePrintDocuments = async (ids: string[]): Promise<Blob> =>
   fetchWithRefresh("/documents/merge-pdf", {
@@ -227,4 +284,51 @@ export const mergePrintDocuments = async (ids: string[]): Promise<Blob> =>
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ ids }),
   });
+
+// ─── Reviews ──────────────────────────────────────────────────────────────────
+
+export type Review = {
+  id: string;
+  name: string;
+  company: string | null;
+  rating: number;
+  message: string;
+  approved?: boolean;
+  createdAt: string;
+};
+
+export const submitReview = async (data: {
+  name: string;
+  company: string;
+  rating: number;
+  message: string;
+  honeypot: string;
+  gdprConsent: boolean;
+}) => {
+  const res = await fetch(`${API_URL}/reviews`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  return handleResponse(res);
+};
+
+export const getApprovedReviews = async (): Promise<Review[]> => {
+  const res = await fetch(`${API_URL}/reviews/public`);
+  return handleResponse(res);
+};
+
+export const getAllReviews = async (): Promise<Review[]> =>
+  fetchWithRefresh("/reviews", { method: "GET" });
+
+export const setReviewApproved = async (id: string, approved: boolean) =>
+  fetchWithRefresh(`/reviews/${id}/approve`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ approved }),
+  });
+
+export const deleteReview = async (id: string) =>
+  fetchWithRefresh(`/reviews/${id}`, { method: "DELETE" });
 

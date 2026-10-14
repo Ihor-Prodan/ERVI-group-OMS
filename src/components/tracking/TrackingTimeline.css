@@ -6,9 +6,9 @@
 
 .timeline-header {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  position: relative;
+  gap: 1.25rem;
   margin-bottom: 2rem;
   width: 100%;
 }
@@ -16,8 +16,42 @@
 .timeline-title {
   text-align: center;
   font-size: 1.5rem;
-  margin-bottom: 2rem;
+  margin: 0;
   color: #1e293b;
+}
+
+.timeline-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 2.5rem 1.5rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  color: #475569;
+}
+
+.timeline-empty svg {
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.timeline-empty h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #1e293b;
+}
+
+.timeline-empty p {
+  margin: 0;
+  max-width: 420px;
+  font-size: 0.9rem;
+}
+
+.timeline-empty--error svg {
+  color: #dc2626;
 }
 
 .timeline {
@@ -78,23 +112,21 @@
 }
 
 .back-button {
-  position: absolute;
-  top: 60%;
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 0.5rem 1rem;
-  border: 1px solid #3563e9;
+  border: 1px solid #1e293b;
   border-radius: 8px;
   background-color: white;
-  color: #3563e9;
+  color: #1e293b;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .back-button:hover {
-  background-color: #3563e9;
+  background-color: #1e293b;
   color: white;
 }
 

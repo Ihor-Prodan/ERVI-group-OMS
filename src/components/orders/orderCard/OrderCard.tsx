@@ -30,6 +30,7 @@ interface OrderCardProps {
   onShowDetails: (id: string) => void;
   refreshOrders: () => Promise<void>;
   setSelectedOrder?: React.Dispatch<React.SetStateAction<OrderDetails | null>>;
+  readOnly?: boolean;
 }
 
 const OrderCard: React.FC<OrderCardProps> = ({
@@ -37,6 +38,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
   order,
   onShowDetails,
   refreshOrders,
+  readOnly,
 }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -287,15 +289,20 @@ const OrderCard: React.FC<OrderCardProps> = ({
               <Building2 size={18} /> {companyName}
             </span>
 
-            <span
-              className="order-card-status"
-              style={{
-                backgroundColor: statusMap[order.status].color,
-                color: statusMap[order.status].color === '#aef840ff' ? 'black' : 'white',
-              }}
-            >
-              {statusMap[order.status].label}
-            </span>
+            <div className="order-card-header-right">
+              {order.source === 'reservation' && (
+                <span className="order-card-reservation-badge">Rezervácia</span>
+              )}
+              <span
+                className="order-card-status"
+                style={{
+                  backgroundColor: statusMap[order.status].color,
+                  color: statusMap[order.status].color === '#aef840ff' ? 'black' : 'white',
+                }}
+              >
+                {statusMap[order.status].label}
+              </span>
+            </div>
           </div>
 
           <div className="order-card-body">
@@ -327,13 +334,13 @@ const OrderCard: React.FC<OrderCardProps> = ({
               <Eye size={16} /> Detaily
             </button>
 
-            {PREV_STATUS[order.status] && order.status !== 'cancelled' && (
+            {!readOnly && PREV_STATUS[order.status] && order.status !== 'cancelled' && (
               <button className="btn revert" onClick={handleRevertStatus}>
                 <ArrowLeft size={16} /> {PREV_STATUS_LABEL[order.status]}
               </button>
             )}
 
-            {order.status === 'sent' && (
+            {!readOnly && order.status === 'sent' && (
               <button
                 className="btn next"
                 style={{ backgroundColor: statusMap[order.status].color, color: 'white' }}
@@ -343,7 +350,7 @@ const OrderCard: React.FC<OrderCardProps> = ({
               </button>
             )}
 
-            {order.status !== 'cancelled' && order.status !== 'paid' && (
+            {!readOnly && order.status !== 'cancelled' && order.status !== 'paid' && (
               <button
                 className="btn next"
                 onClick={handleNextStatusClick}
@@ -367,7 +374,8 @@ const OrderCard: React.FC<OrderCardProps> = ({
               </button>
             )}
 
-            {order.status !== 'cancelled' &&
+            {!readOnly &&
+              order.status !== 'cancelled' &&
               order.status !== 'paid' &&
               order.status !== 'delivered' && (
                 <button className="btn cancel" onClick={handleCancelClick}>
@@ -375,9 +383,10 @@ const OrderCard: React.FC<OrderCardProps> = ({
                 </button>
               )}
 
-            {(order.status === 'cancelled' ||
-              order.status === 'paid' ||
-              order.status === 'delivered') && (
+            {!readOnly &&
+              (order.status === 'cancelled' ||
+                order.status === 'paid' ||
+                order.status === 'delivered') && (
               <button className="btn cancel" onClick={handleDelete}>
                 <XCircle size={16} /> Vymazať objednávku
               </button>

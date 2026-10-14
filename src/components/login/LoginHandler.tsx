@@ -11,12 +11,14 @@ interface LoginHandlerProps {
 
 const LoginHandler: React.FC<LoginHandlerProps> = ({ onClose }) => {
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { setUser } = useAuthStore();
   const { isAuthenticated } = useAuth();
 
   const handleLogin = async (data: { email: string; password: string; honeypot: string }) => {
-    setLoading(true);
+    setError(null);
+
     if (data.honeypot) {
       console.warn('Bot detected');
 
@@ -24,19 +26,17 @@ const LoginHandler: React.FC<LoginHandlerProps> = ({ onClose }) => {
     }
 
     if (!data.email || !data.password) {
-      alert('Prosím, vyplňte všetky polia.');
-      setLoading(false);
+      setError('Prosím, vyplňte všetky polia.');
 
       return;
     }
 
     if (isAuthenticated) {
-      alert('Už ste prihlásený.');
-      setLoading(false);
-
       onClose();
       return;
     }
+
+    setLoading(true);
 
     try {
       const res = await login(data.email, data.password);
@@ -44,20 +44,31 @@ const LoginHandler: React.FC<LoginHandlerProps> = ({ onClose }) => {
       if (res?.ok && res.user) {
         setUser(res.user);
         onClose();
-        navigate(res.user.role === 'admin' ? '/admin/accepted' : '/admin/documents');
+
+        if (res.user.mustChangePassword) {
+          navigate('/change-password');
+        } else {
+          navigate(
+            res.user.role === 'admin'
+              ? '/admin/accepted'
+              : res.user.role === 'company'
+              ? '/admin/new-order'
+              : '/admin/documents'
+          );
+        }
       } else {
-        alert('Chyba prihlásenia, skúste znova.');
+        setError('Chyba prihlásenia, skúste znova.');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
 
-      alert('Chyba prihlásenia, skúste znova');
+      setError(err.message || 'Chyba prihlásenia, skúste znova.');
     } finally {
       setLoading(false);
     }
   };
 
-  return <LoginModal onSubmit={handleLogin} onClose={onClose} loading={loading} />;
+  return <LoginModal onSubmit={handleLogin} onClose={onClose} loading={loading} error={error} />;
 };
 
 export default LoginHandler;

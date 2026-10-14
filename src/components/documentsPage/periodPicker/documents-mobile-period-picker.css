@@ -23,7 +23,7 @@
 .documents-mobile-picker__icon {
   width: 16px;
   height: 16px;
-  color: #3b82f6;
+  color: #1e293b;
 }
 
 .documents-mobile-picker__title {
@@ -82,7 +82,7 @@
 }
 
 .documents-mobile-picker__select:focus {
-  border-color: #3b82f6;
+  border-color: #1e293b;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
   background: #fff;
 }

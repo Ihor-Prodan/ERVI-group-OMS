@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import './Header.css';
-import Button from '../../UI-elements/button/Buttot';
 import SearchInput from '../../UI-elements/searchInput/SearchInput';
 import { useNavigate } from 'react-router-dom';
-import { getOrderByTrackingNumber, logout } from '../API/API';
+import { getOrderByTrackingNumber } from '../API/API';
 import { transformOrderToSteps } from '../tracking/transformOrder';
 import type { ParcelStep } from '../orders/types';
-import { useAuthStore } from '../../store/authStore';
 import useAuth from '../../hooks/useAuth';
 import Loader from '../../UI-elements/loader/Loader';
-import logo from '../../assets/LOGO.jpg';
+import logo from '../../assets/LOGO-white.png';
+import UserMenu from './UserMenu';
 
 interface HeaderProps {
   onLoginClick: () => void;
@@ -27,20 +26,8 @@ const Header: React.FC<HeaderProps> = ({
 }) => {
   const [hiddenBotField, setHiddenBotField] = useState('');
   const [loading, setLoading] = useState(false);
-  const { logoutUser } = useAuthStore();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-
-      logoutUser();
-      navigate('/');
-    } catch (error) {
-      console.error('Error during logout:', error);
-    }
-  };
 
   const onSearch = async () => {
     setLoading(true);
@@ -73,13 +60,6 @@ const Header: React.FC<HeaderProps> = ({
       return;
     }
 
-    // if (!Number(parcelNumber) && isNaN(Number(parcelNumber))) {
-    //   alert('Musíte zadať platné číslo objednávky.');
-    //   setLoading(false);
-
-    //   return;
-    // }
-
     try {
       const order = await getOrderByTrackingNumber(parcelNumber);
       setSteps(transformOrderToSteps(order));
@@ -97,7 +77,12 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="header">
-      <img className="header__logo" src={logo} alt="Logo" />
+      <img
+        className="header__logo"
+        src={logo}
+        alt="Logo"
+        onClick={() => navigate('/ervi-group')}
+      />
 
       <div className="header__actions">
         <SearchInput
@@ -121,9 +106,11 @@ const Header: React.FC<HeaderProps> = ({
           autoComplete="off"
         />
         {isAuthenticated ? (
-          <Button text="Odhlásiť sa" variant="error" size="md" onClick={() => handleLogout()} />
+          <UserMenu />
         ) : (
-          <Button text="Prihlásiť sa" variant="primary" size="md" onClick={onLoginClick} />
+          <button className="header__login" onClick={onLoginClick}>
+            Prihlásiť sa
+          </button>
         )}
       </div>
 

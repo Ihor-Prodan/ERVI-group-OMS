@@ -15,6 +15,8 @@ import type { FormValues } from '../orders/types';
 import { Link } from 'react-router-dom';
 import Loader from '../../UI-elements/loader/Loader';
 import { SlotModal } from './slotModal/SlotModal';
+import ReservationModal from './reservationModal/ReservationModal';
+import useAuth from '../../hooks/useAuth';
 
 dayjs.extend(localizedFormat);
 dayjs.locale('sk');
@@ -22,6 +24,9 @@ dayjs.locale('sk');
 type Slot = { from: number; to: number };
 
 export const Fields = () => {
+  const { isCompany, isAdmin, user } = useAuth();
+  const companyProfile = user?.company;
+
   const [notification, setNotification] = useState<{
     message: string;
     type: 'success' | 'error';
@@ -29,6 +34,7 @@ export const Fields = () => {
   const [honeypot, setHoneypot] = useState('');
   const [loader, setLoader] = useState(false);
   const [slotModalOpen, setSlotModalOpen] = useState(false);
+  const [reservationModalOpen, setReservationModalOpen] = useState(false);
   const [availableSlots, setAvailableSlots] = useState<{ from: number; to: number }[]>([]);
   const [selectedSlotDate, setSelectedSlotDate] = useState<Date | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
@@ -36,13 +42,13 @@ export const Fields = () => {
   const defaultValues: FormValues = {
     productName: '',
     weight: '',
-    company: '',
-    street: '',
-    psc: '',
-    city: '',
-    country: '',
-    email: '',
-    phone: '',
+    company: isCompany ? companyProfile?.slug || 'company' : '',
+    street: isCompany ? companyProfile?.street || '' : '',
+    psc: isCompany ? companyProfile?.psc || '' : '',
+    city: isCompany ? companyProfile?.city || '' : '',
+    country: isCompany ? companyProfile?.country || '' : '',
+    email: isCompany ? companyProfile?.email || '' : '',
+    phone: isCompany ? companyProfile?.phone || '' : '',
     pickupType: '',
     pickupDate: '',
     contractNumber: '',
@@ -64,7 +70,7 @@ export const Fields = () => {
 
   const pickupType = watch('pickupType');
   const selectedCompany = watch('company');
-  const isMiele = selectedCompany === '5';
+  const isMiele = isCompany ? companyProfile?.slug === 'miele-cz' : selectedCompany === '5';
 
   const onSubmit = async (data: FormValues) => {
     setLoader(true);
@@ -137,18 +143,28 @@ export const Fields = () => {
 
   return (
     <section className="fields-section">
-      {!notification && (
-        <div className="fields-hero">
-          <h1 className="fields-hero__title">Preprava a logistika</h1>
-          <div className="fields-hero__info">
-            <span>📍 Trnavská cesta 112A, Bratislava</span>
-            <span>✉️ info@ervi-group.com</span>
-            <span>📞 +421 911 640 665</span>
-            <span>IČO: 56829175</span>
-          </div>
+      {!notification && <h2 style={{ textAlign: 'center' }}>Objednávka dopravy</h2>}
+
+      {!notification && isAdmin && (
+        <div className="fields-reservation-trigger">
+          <Button
+            text="Vytvoriť rezerváciu"
+            variant="secondary"
+            size="sm"
+            type="button"
+            onClick={() => setReservationModalOpen(true)}
+          />
         </div>
       )}
-      {!notification && <h2 style={{ textAlign: 'center' }}>Objednávka dopravy</h2>}
+
+      {reservationModalOpen && (
+        <ReservationModal
+          onClose={() => setReservationModalOpen(false)}
+          onCreated={() =>
+            setNotification({ message: 'Rezervácia bola úspešne vytvorená.', type: 'success' })
+          }
+        />
+      )}
 
       {notification && (
         <Notification
@@ -228,36 +244,38 @@ export const Fields = () => {
                 )}
               />
 
-              <Controller
-                name="company"
-                control={control}
-                rules={{ required: 'Toto pole je povinné' }}
-                render={({ field, fieldState }) => (
-                  <CustomDropdown
-                    label="Názov spoločnosti"
-                    placeholder="Vyberte spoločnosť"
-                    options={COMPANY_OPTIONS}
-                    value={field.value}
-                    onChange={(value) => {
-                      field.onChange(value);
+              {!isCompany && (
+                <Controller
+                  name="company"
+                  control={control}
+                  rules={{ required: 'Toto pole je povinné' }}
+                  render={({ field, fieldState }) => (
+                    <CustomDropdown
+                      label="Názov spoločnosti"
+                      placeholder="Vyberte spoločnosť"
+                      options={COMPANY_OPTIONS}
+                      value={field.value}
+                      onChange={(value) => {
+                        field.onChange(value);
 
-                      const companyData = companiesMap.find((c) => c.id === value);
+                        const companyData = companiesMap.find((c) => c.id === value);
 
-                      reset({
-                        ...watch(),
-                        street: companyData?.adress || '',
-                        psc: companyData?.psc || '',
-                        city: companyData?.city || '',
-                        country: companyData?.country || '',
-                        email: companyData?.email || '',
-                        phone: companyData?.phone || '',
-                      });
-                    }}
-                    error={!!fieldState.error}
-                    errorMessage={fieldState.error?.message}
-                  />
-                )}
-              />
+                        reset({
+                          ...watch(),
+                          street: companyData?.adress || '',
+                          psc: companyData?.psc || '',
+                          city: companyData?.city || '',
+                          country: companyData?.country || '',
+                          email: companyData?.email || '',
+                          phone: companyData?.phone || '',
+                        });
+                      }}
+                      error={!!fieldState.error}
+                      errorMessage={fieldState.error?.message}
+                    />
+                  )}
+                />
+              )}
 
               <Controller
                 name="street"
@@ -829,6 +847,7 @@ export const Fields = () => {
               text="Očistiť formulár"
               variant="secondary"
               size="md"
+              type="button"
               onClick={() => reset(defaultValues)}
               disabled={loader}
             />
@@ -836,6 +855,7 @@ export const Fields = () => {
               text="Odoslať objednávku"
               variant="primary"
               size="md"
+              type="button"
               onClick={handleSubmit(onSubmit)}
               disabled={loader}
             />

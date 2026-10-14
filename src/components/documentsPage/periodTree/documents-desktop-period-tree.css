@@ -105,7 +105,7 @@
 }
 
 .documents-desktop-tree__folder.is-selected {
-  color: #3b82f6;
+  color: #1e293b;
 }
 
 /* LABEL */
@@ -167,7 +167,7 @@
 
 /* SELECTED MONTH */
 .documents-desktop-tree__month.is-selected {
-  background: #2563eb;
+  background: #1e293b;
   color: #ffffff;
 }
 
@@ -180,7 +180,7 @@
   font-family: monospace;
 
   background: #eff6ff;
-  color: #2563eb;
+  color: #1e293b;
 }
 
 /* SELECTED COUNT */

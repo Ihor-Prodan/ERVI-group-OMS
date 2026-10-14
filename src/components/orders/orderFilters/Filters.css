@@ -8,3 +8,10 @@
 .filters-container .custom-dropdown-wrapper {
   flex: 1 1 200px;
 }
+
+@media (max-width: 600px) {
+  .filters-container {
+    display: none;
+  }
+}
+

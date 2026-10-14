@@ -33,12 +33,12 @@
 }
 
 .custom-input-field:hover:not(:disabled) {
-  border-color: #3563e9;
+  border-color: #1e293b;
 }
 
 .custom-input-field:focus {
-  border-color: #3563e9;
-  box-shadow: 0 0 0 2px rgba(53, 99, 233, 0.2);
+  border-color: #1e293b;
+  box-shadow: 0 0 0 2px rgba(30, 41, 59, 0.2);
 }
 
 .custom-input-field.error {

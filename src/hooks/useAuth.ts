@@ -25,7 +25,14 @@ const useAuth = () => {
     fetchAuth();
   }, [setUser, logoutUser]);
 
-  return { isAuthenticated: !!user, user, isAdmin: user?.role === 'admin', isLoading };
+  return {
+    isAuthenticated: !!user,
+    user,
+    isAdmin: user?.role === 'admin',
+    isAccountant: user?.role === 'accountant',
+    isCompany: user?.role === 'company',
+    isLoading,
+  };
 };
 
 export default useAuth;

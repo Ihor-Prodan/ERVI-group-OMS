@@ -7,9 +7,10 @@ interface OrdersListProps {
   orders: OrderDetails[];
   onShowDetails: (id: string) => void;
   refreshOrders: () => Promise<void>;
+  readOnly?: boolean;
 }
 
-const OrdersList: React.FC<OrdersListProps> = ({ orders, onShowDetails, refreshOrders }) => {
+const OrdersList: React.FC<OrdersListProps> = ({ orders, onShowDetails, refreshOrders, readOnly }) => {
   return (
     <div className="orders-list">
       {orders.length === 0 && (
@@ -24,6 +25,7 @@ const OrdersList: React.FC<OrdersListProps> = ({ orders, onShowDetails, refreshO
           order={order}
           onShowDetails={onShowDetails}
           refreshOrders={refreshOrders}
+          readOnly={readOnly}
         />
       ))}
     </div>

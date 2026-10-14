@@ -1,0 +1,166 @@
+.reservation-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  padding: 16px;
+}
+
+.reservation-modal {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 28px 26px 24px;
+}
+
+.reservation-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink-100);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--ink-600);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.reservation-modal-close:hover {
+  background: var(--ink-200);
+  color: var(--ink-900);
+}
+
+.reservation-modal-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--danger-soft);
+  color: #dc2626;
+  margin-bottom: 12px;
+}
+
+.reservation-modal h3 {
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.reservation-modal-subtitle {
+  margin: 0 0 18px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--ink-600);
+}
+
+.reservation-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.reservation-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.reservation-field-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ink-600);
+}
+
+.reservation-field input,
+.reservation-field textarea {
+  border: 1px solid var(--ink-200);
+  border-radius: var(--radius-sm);
+  padding: 9px 11px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: var(--ink-900);
+  resize: vertical;
+}
+
+.reservation-field input:focus,
+.reservation-field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.reservation-field-row {
+  display: flex;
+  gap: 12px;
+}
+
+.reservation-field-row .reservation-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.reservation-modal-error {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #dc2626;
+}
+
+.reservation-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.reservation-btn {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.reservation-btn--cancel {
+  background: var(--ink-100);
+  color: var(--ink-600);
+}
+
+.reservation-btn--cancel:hover {
+  background: var(--ink-200);
+}
+
+.reservation-btn--submit {
+  background: #dc2626;
+  color: #fff;
+}
+
+.reservation-btn--submit:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.reservation-btn--submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}

@@ -1,12 +1,27 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+export interface UserCompany {
+  id: string;
+  slug: string;
+  name: string;
+  street: string;
+  psc: string;
+  city: string;
+  country: string;
+  email: string;
+  phone: string;
+}
+
 interface User {
   id: string;
   email: string;
   firstName?: string;
   lastName?: string;
-  role: 'admin' | 'accountant';
+  role: 'admin' | 'accountant' | 'company';
+  companyId?: string | null;
+  company?: UserCompany | null;
+  mustChangePassword?: boolean;
 }
 
 interface AuthState {

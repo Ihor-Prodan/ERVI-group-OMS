@@ -35,6 +35,15 @@
   font-size: 0.9rem;
 }
 
+.footer-right a {
+  color: #f9fafb;
+  text-decoration: none;
+}
+
+.footer-right a:hover {
+  text-decoration: underline;
+}
+
 .footer-socials {
   display: flex;
   gap: 0.5rem;
@@ -52,7 +61,7 @@
 }
 
 .footer-socials a:hover {
-  background-color: #2563eb;
+  background-color: #1e293b;
   transform: scale(1.05);
 }
 

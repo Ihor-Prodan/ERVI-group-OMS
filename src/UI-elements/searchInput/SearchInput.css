@@ -2,26 +2,25 @@
   display: flex;
   align-items: center;
   width: 280px;
-  border: 1.5px solid #90a3bf;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
   outline: none;
   border-radius: 9999px;
   overflow: hidden;
-  background-color: white;
-  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+  background-color: transparent;
+  transition: border-color 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
 }
 
 .search-input:hover {
-  border-color: #64748b;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 .search-input:focus-within {
-  border-color: #3563e9;
-  box-shadow: 0 0 0 3px rgba(53, 99, 233, 0.25);
+  border-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15);
 }
 
 .search-input--disabled {
-  background-color: #f3f4f6;
+  background-color: rgba(255, 255, 255, 0.05);
   cursor: not-allowed;
   opacity: 0.7;
 }
@@ -32,17 +31,18 @@
 
 .search-input__field {
   flex: 1;
+  min-width: 0;
   padding: 0.6rem 0.9rem;
   border: none;
   outline: none;
   font-size: 1rem;
   background: transparent;
-  color: #4f5a70;
+  color: #ffffff;
   transition: color 150ms ease;
 }
 
 .search-input__field::placeholder {
-  color: #9ca3af;
+  color: #94a3b8;
   opacity: 0.9;
   transition: color 150ms ease;
 }
@@ -54,20 +54,23 @@
 .search-input__button {
   width: 32px;
   height: 32px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #3563e9;
-  border: none;
+  background-color: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
   border-radius: 50%;
-  color: white;
+  color: #ffffff;
   cursor: pointer;
-  transition: background-color 150ms ease, transform 120ms ease;
+  transition: background-color 150ms ease, border-color 150ms ease, transform 120ms ease;
   margin-right: 4px;
 }
 
 .search-input__button:hover:not(:disabled) {
-  background-color: #264bc8;
+  background-color: #ffffff;
+  border-color: #ffffff;
+  color: #1e293b;
   transform: scale(1.05);
 }
 
@@ -75,13 +78,10 @@
   transform: scale(0.92);
 }
 
-.search-input__button:hover {
-  background-color: #264bc8;
-  transform: scale(1.05);
-}
-
 .search-input__button:disabled {
-  background-color: #9ca3af;
+  background-color: transparent;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #64748b;
   cursor: not-allowed;
 }
 
@@ -98,4 +98,3 @@
     min-width: 0;
   }
 }
-

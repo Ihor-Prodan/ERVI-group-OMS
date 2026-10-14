@@ -2,7 +2,7 @@
   display: flex;
   height: 100%;
   width: 100%;
-  background: #f6f7f9;
+  background: var(--ink-50);
   position: relative;
 }
 
@@ -13,4 +13,10 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+}
+
+@media (max-width: 900px) {
+  .admin-content {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  }
 }

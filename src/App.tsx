@@ -2,8 +2,8 @@
 import { useState } from 'react';
 import './App.css';
 import { HashRouter as Router } from 'react-router-dom';
-import Footer from './components/footer/Footer';
-import Header from './components/header/Header';
+import SiteFooter from './components/footer/SiteFooter';
+import SiteHeader from './components/header/SiteHeader';
 import AppRoutes from './components/router/Router';
 import LoginHandler from './components/login/LoginHandler';
 import type { ParcelStep } from './components/orders/types';
@@ -15,7 +15,7 @@ function App() {
 
   return (
     <Router>
-      <Header
+      <SiteHeader
         onLoginClick={() => setIsLoginOpen(true)}
         parcelNumber={parcelNumber}
         setParcelNumber={setParcelNumber}
@@ -27,7 +27,7 @@ function App() {
         <AppRoutes steps={steps} setSteps={setSteps} setParcelNumber={setParcelNumber} />
       </div>
 
-      <Footer />
+      <SiteFooter />
 
       {isLoginOpen && <LoginHandler onClose={() => setIsLoginOpen(false)} />}
     </Router>

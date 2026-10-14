@@ -40,7 +40,7 @@
 .slot-modal-button {
   width: 100%;
   padding: 0.5rem 0;
-  background-color: #3b82f6;
+  background-color: #1e293b;
   color: #fff;
   font-weight: 500;
   border: none;
@@ -50,7 +50,7 @@
 }
 
 .slot-modal-button:hover {
-  background-color: #2563eb;
+  background-color: #1e293b;
 }
 
 .slot-modal-close {

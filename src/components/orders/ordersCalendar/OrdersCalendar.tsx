@@ -3,10 +3,12 @@ import type { OrderDetails } from '../types';
 import OrderCard from '../orderCard/OrderCard';
 import './OrdersCalendar.css';
 import { format } from 'date-fns';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, FileDown } from 'lucide-react';
 import { WEEK_DAYS } from './const';
 import { getDayColor, isWeekend } from './utils';
 import { statusMap } from '../../../const/const';
+import useAuth from '../../../hooks/useAuth';
+import { generateDayOrdersDocument } from '../../API/API';
 
 interface OrdersCalendarProps {
   refreshOrders: () => Promise<void>;
@@ -19,16 +21,39 @@ const OrdersCalendar: React.FC<OrdersCalendarProps> = ({
   refreshOrders,
   ordersFromServer,
 }) => {
+  const { isCompany } = useAuth();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedOrder, setSelectedOrder] = useState<OrderDetails | null>(null);
+  const [generatingDoc, setGeneratingDoc] = useState(false);
+
+  const handleGenerateDayDoc = async (dateKey: string, dayOrders: OrderDetails[]) => {
+    setGeneratingDoc(true);
+    try {
+      const blob = await generateDayOrdersDocument(
+        dayOrders.map((o) => o.id),
+        dateKey
+      );
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Objednavky_${dateKey}.pdf`;
+      link.click();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      alert('Chyba pri generovaní dokumentu.');
+    } finally {
+      setGeneratingDoc(false);
+    }
+  };
 
   useEffect(() => {
     refreshOrders();
   }, []);
 
   const sentOrders = ordersFromServer.filter(
-    (o) => o.status === 'sent' || o.status === 'delivered'
+    (o) => o.status === 'sent' || o.status === 'delivered' || o.status === 'paid'
   );
   const ordersByDate: Record<string, OrderDetails[]> = {};
 
@@ -39,6 +64,21 @@ const OrdersCalendar: React.FC<OrdersCalendarProps> = ({
 
     if (!ordersByDate[dateKey]) ordersByDate[dateKey] = [];
     ordersByDate[dateKey].push(o);
+  });
+
+  const reservations = ordersFromServer.filter((o) => o.source === 'reservation');
+  const reservationDates = new Set<string>();
+
+  reservations.forEach((o) => {
+    if (!o.statusDates?.accepted) return;
+
+    const dateKey = format(new Date(o.statusDates.accepted), 'yyyy-MM-dd');
+
+    reservationDates.add(dateKey);
+    if (!ordersByDate[dateKey]) ordersByDate[dateKey] = [];
+    if (!ordersByDate[dateKey].some((existing) => existing.id === o.id)) {
+      ordersByDate[dateKey].push(o);
+    }
   });
 
   const year = currentMonth.getFullYear();
@@ -88,27 +128,31 @@ const OrdersCalendar: React.FC<OrdersCalendarProps> = ({
           const count = ordersByDate[dateKey]?.filter((o) => o.status === 'sent').length || 0;
           const deliveredCount =
             ordersByDate[dateKey]?.filter((o) => o.status === 'delivered').length || 0;
+          const paidCount = ordersByDate[dateKey]?.filter((o) => o.status === 'paid').length || 0;
+          const hasReservation = reservationDates.has(dateKey);
 
           return (
             <div
               key={day}
               data-day={day}
               onClick={() => setSelectedDate(dateKey)}
-              className={`order-calendar-day 
-                ${selectedDate === dateKey ? 'selected' : ''} 
+              className={`order-calendar-day
+                ${selectedDate === dateKey ? 'selected' : ''}
                 ${isWeekend(year, month, day) ? 'weekend' : ''}
                 ${isToday ? 'today' : ''}`}
               style={{ backgroundColor: getDayColor(count, deliveredCount, isToday) }}
             >
               <span>{day}</span>
-              {/* {count > 0 && <div className="order-calendar-badge">{count}</div>} */}
-              {count > 0 && <div className="order-calendar-badge badge-sent">{count}</div>}
-
-              {deliveredCount > 0 && (
-                <div className="order-calendar-badge badge-delivered" style={{ top: '30px' }}>
-                  {deliveredCount}
-                </div>
+              {hasReservation && (
+                <span className="order-calendar-reservation-dot" title="Rezervácia" />
               )}
+              <div className="order-calendar-badges">
+                {count > 0 && <div className="order-calendar-badge badge-sent">{count}</div>}
+                {deliveredCount > 0 && (
+                  <div className="order-calendar-badge badge-delivered">{deliveredCount}</div>
+                )}
+                {paidCount > 0 && <div className="order-calendar-badge badge-paid">{paidCount}</div>}
+              </div>
             </div>
           );
         })}
@@ -116,10 +160,25 @@ const OrdersCalendar: React.FC<OrdersCalendarProps> = ({
 
       {selectedDate && ordersByDate[selectedDate]?.length > 0 && (
         <div className="order-calendar-orders-list">
-          <h3>Objednávky pre {selectedDate}</h3>
+          <div className="order-calendar-orders-list-header">
+            <h3>Objednávky pre {selectedDate}</h3>
+            <button
+              type="button"
+              className="order-calendar-gen-doc-btn"
+              disabled={generatingDoc}
+              onClick={() => handleGenerateDayDoc(selectedDate, ordersByDate[selectedDate])}
+            >
+              <FileDown size={15} />
+              {generatingDoc ? 'Generuje sa...' : 'Generovať dokument'}
+            </button>
+          </div>
           <ul>
             {[...ordersByDate[selectedDate]]
-              .sort((a, b) => new Date(a.statusDates.sent!).getTime() - new Date(b.statusDates.sent!).getTime())
+              .sort((a, b) => {
+                const aTime = new Date(a.statusDates.sent || a.statusDates.accepted || 0).getTime();
+                const bTime = new Date(b.statusDates.sent || b.statusDates.accepted || 0).getTime();
+                return aTime - bTime;
+              })
               .map((o) => (
               <li
                 key={o.id}
@@ -127,8 +186,9 @@ const OrdersCalendar: React.FC<OrdersCalendarProps> = ({
                 className="order-calendar-order-item"
               >
                 <span className="order-calendar-order-time">
-                  #{o.deliveryNumber} - {o.company} → {o.to} ({format(o.statusDates.sent!, 'HH:mm')}
-                  )
+                  {o.source === 'reservation' && <span className="order-calendar-reservation-tag">Rezervácia</span>}
+                  #{o.deliveryNumber} - {o.company} → {o.to || o.receiverStreet} (
+                  {format(new Date(o.statusDates.sent || o.statusDates.accepted || 0), 'HH:mm')})
                 </span>
 
                 <span
@@ -157,6 +217,7 @@ const OrdersCalendar: React.FC<OrdersCalendarProps> = ({
               refreshOrders={refreshOrders}
               onShowDetails={onShowDetails}
               setSelectedOrder={setSelectedOrder}
+              readOnly={isCompany}
             />
           </div>
         </div>

@@ -1,0 +1,11 @@
+/* Why us */
+
+.landing__whyus {
+  background-position: 110% center;
+}
+
+@media (max-width: 900px) {
+  .landing__whyus {
+    background-position: right center;
+  }
+}

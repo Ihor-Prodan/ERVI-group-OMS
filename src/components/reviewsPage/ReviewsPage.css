@@ -1,0 +1,152 @@
+.reviews-page {
+  padding: 2rem;
+  max-width: 820px;
+}
+
+.reviews-header {
+  margin-bottom: 2rem;
+}
+
+.reviews-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+}
+
+.reviews-subtitle {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 4px 0 0;
+}
+
+.reviews-loading {
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.reviews-section {
+  margin-bottom: 2rem;
+}
+
+.reviews-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 12px;
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reviews-card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.reviews-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.reviews-card-name {
+  font-weight: 700;
+  font-size: 14px;
+  color: #1e293b;
+}
+
+.reviews-card-company {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.reviews-card-stars {
+  display: flex;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.reviews-card-message {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.5;
+  margin: 0 0 12px;
+  white-space: pre-wrap;
+}
+
+.reviews-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.reviews-card-date {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.reviews-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reviews-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.reviews-action-btn--approve {
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.reviews-action-btn--approve:hover {
+  background: #dcfce7;
+}
+
+.reviews-action-btn--reject {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.reviews-action-btn--reject:hover {
+  background: #e2e8f0;
+}
+
+.reviews-delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.reviews-delete-btn:hover {
+  background: #fff1f2;
+  color: #e11d48;
+}

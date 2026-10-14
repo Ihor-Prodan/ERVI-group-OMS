@@ -14,6 +14,11 @@ export const COMPANY_OPTIONS: CompanyOption[] = [
 export const COUNTRY_OPTIONS = [
   { label: 'Slovenská republika', value: 'SK' },
   { label: 'Česká republika', value: 'CZ' },
+  { label: 'Poľsko', value: 'PL' },
+  { label: 'Maďarsko', value: 'HU' },
+  { label: 'Rakúsko', value: 'AT' },
+  { label: 'Nemecko', value: 'DE' },
+  { label: 'Rumunsko', value: 'RO' },
 ];
 
 export const companiesMap = [

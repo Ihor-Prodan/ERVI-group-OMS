@@ -25,20 +25,32 @@ const DocumentsPage: React.FC = () => {
   };
 
   const handleDeleteDocument = async (id: string) => {
-    await deleteDocument(id);
-    setDocuments(prev => prev.filter(d => d.id !== id));
+    try {
+      await deleteDocument(id);
+      setDocuments(prev => prev.filter(d => d.id !== id));
+    } catch (err: any) {
+      alert(err.message || 'Dokument sa nepodarilo zmazať.');
+    }
   };
 
   const handleTogglePaid = async (id: string) => {
     const doc = documents.find(d => d.id === id);
     if (!doc) return;
-    const updated = await toggleDocumentPaid(id, !doc.isPaid);
-    setDocuments(prev => prev.map(d => (d.id === id ? updated : d)));
+    try {
+      const updated = await toggleDocumentPaid(id, !doc.isPaid);
+      setDocuments(prev => prev.map(d => (d.id === id ? updated : d)));
+    } catch (err: any) {
+      alert(err.message || 'Nepodarilo sa zmeniť stav úhrady.');
+    }
   };
 
   const handleToggleVisibility = async (id: string, visible: boolean) => {
-    const updated = await toggleDocumentVisibility(id, visible);
-    setDocuments(prev => prev.map(d => (d.id === id ? updated : d)));
+    try {
+      const updated = await toggleDocumentVisibility(id, visible);
+      setDocuments(prev => prev.map(d => (d.id === id ? updated : d)));
+    } catch (err: any) {
+      alert(err.message || 'Nepodarilo sa zmeniť viditeľnosť dokumentu.');
+    }
   };
 
   if (isLoading) return <Loader fullscreen />;

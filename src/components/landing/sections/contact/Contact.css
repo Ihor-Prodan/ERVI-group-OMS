@@ -1,0 +1,120 @@
+/* Contact */
+
+.landing__title-accent {
+  color: #dc2626;
+}
+
+.landing__contact {
+  text-align: left;
+}
+
+.landing__contact-items {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 12px;
+}
+
+.landing__contact-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.landing__contact-item .landing__badge {
+  margin-bottom: 0;
+}
+
+.landing__contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: start;
+}
+
+.landing__contact-intro .landing__title,
+.landing__contact-intro .landing__lead {
+  max-width: 480px;
+}
+
+.landing__contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 28px;
+}
+
+.landing__contact-form input,
+.landing__contact-form textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 16px;
+  font-family: inherit;
+  color: #ffffff;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.landing__contact-form input::placeholder,
+.landing__contact-form textarea::placeholder {
+  color: #94a3b8;
+}
+
+.landing__contact-form input:hover,
+.landing__contact-form textarea:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.landing__contact-form input:focus,
+.landing__contact-form textarea:focus {
+  border-color: #dc2626;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.landing__contact-form .custom-checkbox-label {
+  align-items: flex-start;
+  color: #cbd5e1;
+}
+
+.landing__contact-form .custom-checkbox-box {
+  margin-top: 1px;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.landing__contact-form .gdpr-link {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.landing__contact-form .gdpr-link:hover {
+  color: #dc2626;
+}
+
+.landing__contact-form .landing__cta {
+  align-self: flex-start;
+  border: none;
+  cursor: pointer;
+}
+
+.landing__contact-form .landing__cta:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+  .landing__contact-grid {
+    grid-template-columns: 1fr;
+  }
+}

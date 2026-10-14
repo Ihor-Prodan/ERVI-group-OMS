@@ -53,8 +53,9 @@ export const DocumentsRightPanel = ({
       const url = URL.createObjectURL(blob);
       if (win) win.location.href = url;
       setTimeout(() => URL.revokeObjectURL(url), 60000);
-    } catch {
+    } catch (err: any) {
       if (win) win.close();
+      alert(err.message || 'Nepodarilo sa pripraviť dokumenty na tlač.');
     } finally {
       setIsPrinting(false);
     }

@@ -21,6 +21,7 @@ const Button: React.FC<ButtonProps> = ({
   size = 'md',
   disabled = false,
   className = '',
+  type = 'submit',
 }) => {
   const classes = [
     'btn',
@@ -33,7 +34,7 @@ const Button: React.FC<ButtonProps> = ({
     .join(' ');
 
   return (
-    <button className={classes} onClick={onClick} disabled={disabled}>
+    <button type={type} className={classes} onClick={onClick} disabled={disabled}>
       {text}
     </button>
   );

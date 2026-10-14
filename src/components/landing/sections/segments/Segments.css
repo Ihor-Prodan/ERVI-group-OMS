@@ -1,0 +1,62 @@
+/* Segments */
+
+.landing__segment {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 22px 26px;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.landing__segment:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+  transition-delay: 0s;
+}
+
+.landing__segment .landing__badge {
+  margin-bottom: 0;
+}
+
+.landing__segment h3 {
+  font-size: 15px;
+  margin: 0;
+  color: #1e293b;
+}
+
+.landing__dark-box--cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.landing__dark-box--cta p {
+  color: #94a3b8;
+  margin: 6px 0 0;
+  font-size: 14px;
+}
+
+.landing__dark-box-email {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 18px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.landing__dark-box-email:hover {
+  color: #dc2626;
+}
+
+@media (max-width: 600px) {
+  .landing__dark-box--cta {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

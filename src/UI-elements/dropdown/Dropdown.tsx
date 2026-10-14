@@ -5,6 +5,7 @@ import './Dropdown.css';
 type Option = {
   value: string | number;
   label: string;
+  disabled?: boolean;
 };
 
 type CustomDropdownProps = {
@@ -34,7 +35,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const handleSelect = (option: Option) => {
-    if (disabled) return;
+    if (disabled || option.disabled) return;
     onChange?.(option.value);
     setOpen(false);
   };
@@ -77,7 +78,7 @@ const CustomDropdown: React.FC<CustomDropdownProps> = ({
               key={option.value}
               className={`custom-dropdown-option ${
                 option.value === value ? 'selected' : ''
-              }`}
+              } ${option.disabled ? 'disabled' : ''}`}
               onClick={() => handleSelect(option)}
             >
               <span>{option.label}</span>
