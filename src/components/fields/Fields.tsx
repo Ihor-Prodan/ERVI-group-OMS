@@ -7,10 +7,10 @@ import './Fields.css';
 import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 import 'dayjs/locale/sk';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Notification from '../notification/Notification';
-import { createOrder, fetchAvailableSlots } from '../API/API';
-import { companiesMap, COMPANY_OPTIONS, COUNTRY_OPTIONS } from './companies';
+import { createOrder, fetchAvailableSlots, getCompanies, type Company } from '../API/API';
+import { COUNTRY_OPTIONS } from './companies';
 import type { FormValues } from '../orders/types';
 import { Link } from 'react-router-dom';
 import Loader from '../../UI-elements/loader/Loader';
@@ -38,6 +38,15 @@ export const Fields = () => {
   const [availableSlots, setAvailableSlots] = useState<{ from: number; to: number }[]>([]);
   const [selectedSlotDate, setSelectedSlotDate] = useState<Date | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  const [companies, setCompanies] = useState<Company[]>([]);
+
+  useEffect(() => {
+    if (isCompany) return;
+
+    getCompanies()
+      .then(setCompanies)
+      .catch((err) => console.error('Failed to load companies:', err));
+  }, [isCompany]);
 
   const defaultValues: FormValues = {
     productName: '',
@@ -70,7 +79,9 @@ export const Fields = () => {
 
   const pickupType = watch('pickupType');
   const selectedCompany = watch('company');
-  const isMiele = isCompany ? companyProfile?.slug === 'miele-cz' : selectedCompany === '5';
+  const isMiele = isCompany
+    ? companyProfile?.slug === 'miele-cz'
+    : companies.find((c) => c.id === selectedCompany)?.slug === 'miele-cz';
 
   const onSubmit = async (data: FormValues) => {
     setLoader(true);
@@ -253,16 +264,19 @@ export const Fields = () => {
                     <CustomDropdown
                       label="Názov spoločnosti"
                       placeholder="Vyberte spoločnosť"
-                      options={COMPANY_OPTIONS}
+                      options={[
+                        ...companies.map((c) => ({ value: c.id, label: c.name })),
+                        { value: 'other', label: 'Ine...' },
+                      ]}
                       value={field.value}
                       onChange={(value) => {
                         field.onChange(value);
 
-                        const companyData = companiesMap.find((c) => c.id === value);
+                        const companyData = companies.find((c) => c.id === value);
 
                         reset({
                           ...watch(),
-                          street: companyData?.adress || '',
+                          street: companyData?.street || '',
                           psc: companyData?.psc || '',
                           city: companyData?.city || '',
                           country: companyData?.country || '',

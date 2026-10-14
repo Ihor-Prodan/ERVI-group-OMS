@@ -24,7 +24,6 @@ const navEntries: NavEntry[] = [
   { label: 'Služby', children: serviceLinks },
   { id: 'proces', label: 'Proces' },
   { id: 'vyhody', label: 'Výhody' },
-  { id: 'recenzie', label: 'Recenzie' },
   { id: 'kontakt', label: 'Kontakt' },
 ];
 

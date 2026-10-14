@@ -8,7 +8,6 @@ import Specialization from './sections/specialization/Specialization';
 import Process from './sections/process/Process';
 import WhyUs from './sections/whyUs/WhyUs';
 import Segments from './sections/segments/Segments';
-import Reviews from './sections/reviews/Reviews';
 import Contact from './sections/contact/Contact';
 import './Landing.css';
 
@@ -49,7 +48,6 @@ const Landing: React.FC = () => {
       <Process />
       <WhyUs />
       <Segments />
-      <Reviews />
       <Contact />
     </div>
   );
