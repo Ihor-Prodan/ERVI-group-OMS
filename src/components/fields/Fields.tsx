@@ -156,7 +156,7 @@ export const Fields = () => {
     <section className="fields-section">
       {!notification && <h2 style={{ textAlign: 'center' }}>Objednávka dopravy</h2>}
 
-      {!notification && isAdmin && (
+      {!notification && (isAdmin || isCompany) && (
         <div className="fields-reservation-trigger">
           <Button
             text="Vytvoriť rezerváciu"

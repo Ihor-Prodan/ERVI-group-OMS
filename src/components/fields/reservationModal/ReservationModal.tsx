@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { X, CalendarPlus } from 'lucide-react';
 import { createOrder } from '../../API/API';
 import './ReservationModal.css';
@@ -16,15 +16,21 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, onCreated 
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  // Guards against a second submit firing before the "isSubmitting" state
+  // update has re-rendered the disabled button (e.g. double-click/double Enter).
+  const submitLockRef = useRef(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (submitLockRef.current) return;
 
     if (!fullname.trim() || !phone.trim()) {
       setError('Zadajte meno a telefón.');
       return;
     }
 
+    submitLockRef.current = true;
     setIsSubmitting(true);
     setError('');
 
@@ -41,6 +47,7 @@ const ReservationModal: React.FC<ReservationModalProps> = ({ onClose, onCreated 
       onClose();
     } catch (err: any) {
       setError(err.message || 'Rezerváciu sa nepodarilo vytvoriť.');
+      submitLockRef.current = false;
     } finally {
       setIsSubmitting(false);
     }
